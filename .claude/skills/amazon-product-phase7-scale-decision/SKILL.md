@@ -1,15 +1,15 @@
 ---
-name: amazon-product-phase6-scale-decision
-description: "亚马逊精益开发 Phase 6：产品经过验证和迭代后的规模化决策。评估单位经济学、供应链就绪度、竞争护城河、品牌建设能力，输出 Go Big / Maintain / Harvest / Exit 四象限决策。含 12 个月财务预测模型和产品线扩展规划。优先调用 Sorftime MCP；无 Sorftime 时降级为 WebSearch + 用户手动输入运营数据。"
+name: amazon-product-phase7-scale-decision
+description: "亚马逊精益开发 Phase 7：产品经过验证和迭代后的规模化决策。评估单位经济学、供应链就绪度、竞争护城河、品牌建设能力，输出 Go Big / Maintain / Harvest / Exit 四象限决策。含 12 个月财务预测模型和产品线扩展规划。优先调用 Sorftime MCP；无 Sorftime 时降级为 WebSearch + 用户手动输入运营数据。"
 argument-hint: "[ASIN] [站点] [--months 已运营月数] [--target-revenue 目标月营收]"
 user-invocable: true
 ---
 
-# 规模化决策（精益开发 Phase 6）
+# 规模化决策（精益开发 Phase 7）
 
 ## 定位
 
-`amazon-product-phase6-scale-decision` 是精益产品开发闭环的最后阶段。产品已经过 MVP 验证（Phase 3）和 1-2 轮迭代优化（Phase 4-5），需要回答一个关键问题：**这个产品值得 all-in 吗？**
+`amazon-product-phase7-scale-decision` 是精益产品开发闭环的最后阶段。产品已经过 MVP 验证（Phase 3）、工业设计（Phase 4）和 1-2 轮迭代优化（Phase 5-6），需要回答一个关键问题：**这个产品值得 all-in 吗？**
 
 ## 适用场景
 
@@ -29,12 +29,12 @@ user-invocable: true
 
 ### 方式1：指定 ASIN
 ```
-/amazon-product-phase6-scale-decision B0XXXXXXXX US --months 6
+/amazon-product-phase7-scale-decision B0XXXXXXXX US --months 6
 ```
 
 ### 方式2：带目标营收
 ```
-/amazon-product-phase6-scale-decision B0XXXXXXXX US --months 4 --target-revenue 50000
+/amazon-product-phase7-scale-decision B0XXXXXXXX US --months 4 --target-revenue 50000
 ```
 
 ### 方式3：自然语言
@@ -46,7 +46,7 @@ user-invocable: true
 
 当调用此 Skill 时，执行以下流程：
 
-1. **读取完整方法论** — 加载 `skills/amazon-product-phase6-scale-decision/SKILL.md`
+1. **读取完整方法论** — 加载 `skills/amazon-product-phase7-scale-decision/SKILL.md`
 2. **单位经济学验证** — 真实 ACOS/退货率/自然流量占比/单位净利润
 3. **规模化成本模型** — 大批量采购降幅/海运切换/仓储规划/广告边际效益
 4. **供应链就绪评估** — 产能/MOQ/交期/质检/备用供应商/库存模型
@@ -75,9 +75,9 @@ user-invocable: true
 
 ## 上下游对接
 
-- 上游：`amazon-product-phase5-iteration-playbook`（Phase 5：迭代优化）+ `amazon-product-phase4-launch-review`（Phase 4：上架复盘）
+- 上游：`amazon-product-phase6-iteration-playbook`（Phase 6：迭代优化）+ `amazon-product-phase5-launch-review`（Phase 5：上架复盘）
 - 下游：Go Big 决策后进入规模化执行
 
 ## 完整方法论
 
-详见 `skills/amazon-product-phase6-scale-decision/SKILL.md`
+详见 `skills/amazon-product-phase7-scale-decision/SKILL.md`

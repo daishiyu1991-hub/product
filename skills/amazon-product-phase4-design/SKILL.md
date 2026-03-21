@@ -1,30 +1,30 @@
 ---
-name: allen-product-design
-description: 根据产品定义，利用 NanoBanana API 自动生成工业设计概念图。支持多变体探索（颜色/材质/比例）、风格探索（极简/工业/复古等）、多角度渲染（正面/侧面/45度）、使用场景可视化。输入可以是自然语言描述或结构化产品属性表。
+name: amazon-product-phase4-design
+description: "亚马逊精益开发 Phase 4：根据 MVP 蓝图的产品定义，利用 NanoBanana API 自动生成工业设计概念图。支持多变体探索（颜色/材质/比例）、风格探索（极简/工业/复古等）、多角度渲染（正面/侧面/45度）、使用场景可视化。输入可以是自然语言描述或结构化产品属性表。"
 argument-hint: "[产品描述或产品名称] [--style 风格] [--angles 角度] [--variants 变体数]"
 user-invocable: true
 ---
 
-# allen-product-design — 产品定义生图 Skill
+# 工业设计概念图（精益开发 Phase 4）
 
 ## 定位
-面向**工业设计找方向**的 AI 生图工具。根据产品定义（自然语言或结构化属性），自动构建专业 Prompt，调用 NanoBanana API 生成高质量概念图。
+`amazon-product-phase4-design` 是精益产品开发闭环的第四阶段，衔接上游的 MVP 蓝图（`amazon-product-phase3-mvp-blueprint`，Phase 3）。面向**工业设计找方向**的 AI 生图工具。根据产品定义（自然语言或结构化属性），自动构建专业 Prompt，调用 NanoBanana API 生成高质量概念图。
 
 ## 调用方式
 
 ### 方式 1：Slash 命令
 ```
-/allen-product-design 一款带 LED 灯的蓝牙耳机，黑色哑光，运动风格
+/amazon-product-phase4-design 一款带 LED 灯的蓝牙耳机，黑色哑光，运动风格
 ```
 
 ### 方式 2：带参数调用
 ```
-/allen-product-design 便携榨汁杯 --style 极简,工业 --angles 正面,45度 --variants 3 --resolution 2K
+/amazon-product-phase4-design 便携榨汁杯 --style 极简,工业 --angles 正面,45度 --variants 3 --resolution 2K
 ```
 
 ### 方式 3：结构化输入
 ```
-/allen-product-design
+/amazon-product-phase4-design
 {
   "product": "无线充电器",
   "category": "消费电子",
@@ -40,12 +40,12 @@ user-invocable: true
 
 | 步骤 | 动作 |
 |------|------|
-| 1 | 读取完整方法论 — 加载 `skills/allen-product-design/SKILL.md` |
+| 1 | 读取完整方法论 — 加载 `skills/amazon-product-phase4-design/SKILL.md` |
 | 2 | 解析产品定义 — 自然语言 → 结构化属性提取；JSON → 直接解析 |
 | **3** | **内部堆叠调研** — 调研产品内部组件堆叠（搜索 teardown/patent/engineering），确定外形约束（最小宽度/高度/角度/重心）和品类基本型。如果调用方已提供堆叠数据（如 Phase 3 传入），直接使用。 |
 | **4** | **目标用户风格发散** — 根据目标用户年龄段选择 3-4 种匹配的设计风格进行发散探索（见下方「年龄→风格映射」）。每种风格必须遵守堆叠约束 + 品类基本型 + 五条设计准则。 |
 | 5 | 构建 Prompt 矩阵 — 根据风格发散结果 + 堆叠约束生成 Prompt 列表。每个 Prompt 必须包含：品类基本型描述、内部尺寸约束、风格关键词、记忆点定义。 |
-| 6 | 调用 NanoBanana API — 执行 `python skills/allen-product-design/scripts/generate_images.py` |
+| 6 | 调用 NanoBanana API — 执行 `python skills/amazon-product-phase4-design/scripts/generate_images.py` |
 | 7 | 轮询等待结果 — 自动检查任务状态直至完成 |
 | 8 | 下载与整理 — 按维度分组下载图片到输出目录 |
 | 9 | 生成报告 — 输出可视化报告（含所有图片 + Prompt + 参数） |
@@ -95,4 +95,10 @@ user-invocable: true
 - Python 3.8+（requests 库）
 
 ## 详细方法论
-详见 `skills/allen-product-design/SKILL.md`
+## 上下游对接
+
+- 上游：`amazon-product-phase3-mvp-blueprint`（Phase 3：MVP 蓝图 → 产品规格 + 内部堆叠 + 用户画像）
+- 下游：`amazon-product-phase5-launch-review`（Phase 5：上架复盘）
+
+## 详细方法论
+详见 `skills/amazon-product-phase4-design/SKILL.md`
