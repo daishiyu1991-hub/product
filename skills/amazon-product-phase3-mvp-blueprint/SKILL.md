@@ -1,5 +1,5 @@
 ---
-name: lean-product-develop-mvp-blueprint
+name: amazon-product-phase3-mvp-blueprint
 description: "亚马逊精益开发 Phase 3：将选品分析和需求验证结论转化为可执行的 MVP 产品规格书。定义 Must-have/Nice-to-have/Cut 功能矩阵、痛点根因原理层拆解、量化测试标准（Pass/Fail）、成本与盈亏平衡分析、Listing 上架规划。优先调用 Sorftime MCP 获取成本和关键词数据；无 Sorftime 时降级为 WebSearch + 手动输入。"
 argument-hint: "[品类关键词] [站点] [--budget 预算] [--source 上游报告路径]"
 user-invocable: true
@@ -9,7 +9,7 @@ user-invocable: true
 
 ## 定位
 
-`lean-product-develop-mvp-blueprint` 是精益产品开发闭环的第三阶段，衔接上游的选品分析（`zach-product-research`）和需求验证（`zach-feature-demand-validator`），将数据结论转化为**可执行的最小可行产品规格书**。
+`amazon-product-phase3-mvp-blueprint` 是精益产品开发闭环的第三阶段，衔接上游的选品分析（`amazon-product-phase1-research`，Phase 1）和需求验证（`amazon-product-phase2-demand-validator`，Phase 2），将数据结论转化为**可执行的最小可行产品规格书**。
 
 核心问题：**最少做什么就能验证市场？**
 
@@ -30,12 +30,12 @@ user-invocable: true
 
 ### 方式1：指定品类
 ```
-/lean-product-develop-mvp-blueprint bluetooth speaker US
+/amazon-product-phase3-mvp-blueprint bluetooth speaker US
 ```
 
 ### 方式2：关联上游报告
 ```
-/lean-product-develop-mvp-blueprint bluetooth speaker US --source ./工作成果/brands/_选品/市场调研/bluetooth-speaker/v1_20260320/
+/amazon-product-phase3-mvp-blueprint bluetooth speaker US --source ./工作成果/brands/_选品/市场调研/bluetooth-speaker/v1_20260320/
 ```
 
 ### 方式3：自然语言
@@ -47,7 +47,7 @@ user-invocable: true
 
 当调用此 Skill 时，执行以下流程：
 
-1. **读取完整方法论** — 加载 `skills/lean-product-develop-mvp-blueprint/SKILL.md`
+1. **读取完整方法论** — 加载 `skills/amazon-product-phase3-mvp-blueprint/SKILL.md`
 2. **读取上游数据** — 加载选品报告/需求验证报告，提取核心结论（交叉分析空白点、差评痛点、竞品规格、目标定价、关键词）
 3. **用户画像构建** — 基于上游数据（搜索词语义、差评用户属性、竞品评价人群特征、品类使用场景），构建目标用户画像（见下方「用户画像构建方法论」）。用户画像是后续所有步骤的锚点——根因拆解要考虑用户使用场景，创新亮点要匹配用户偏好，配色要符合用户审美，Listing 文案要用用户的语言。
 4. **痛点根因拆解** — 对每个差评痛点执行「原理层拆解」（见下方详细方法论），将「用户感受」分解为「物理/工程根因」，输出精确的改良方向和供应商沟通话术
@@ -75,9 +75,10 @@ user-invocable: true
 
 **三件套（MD + HTML + XLSX）必须同时输出。** 工业设计图通过调用 `/allen-product-design` 生成，传入 MVP 规格书中的外观定义作为输入。
 
-## 下游对接
+## 上下游对接
 
-- MVP 蓝图中的测试标准 → `lean-product-develop-launch-review` 复盘时的对照基线
+- 上游：`amazon-product-phase1-research`（Phase 1）+ `amazon-product-phase2-demand-validator`（Phase 2）
+- 下游：MVP 蓝图中的测试标准 → `amazon-product-phase4-launch-review`（Phase 4）复盘时的对照基线
 - Listing 规划 → 直接用于产品上架
 - 根因拆解 + 供应商沟通指南 → 直接用于供应商谈判和打样需求
 - 工业设计概念图 → 供应商发送打样参考（"这就是我们要做的产品"）+ Listing 主图拍摄方向参考 + 品牌视觉标准锚定
@@ -550,4 +551,4 @@ user-invocable: true
 
 ## 完整方法论
 
-详见本文件 `skills/lean-product-develop-mvp-blueprint/SKILL.md`
+详见本文件 `skills/amazon-product-phase3-mvp-blueprint/SKILL.md`

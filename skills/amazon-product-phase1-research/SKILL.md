@@ -1,15 +1,15 @@
 ---
-name: zach-product-research
-description: 基于 Sorftime MCP 的亚马逊选品分析 Skill，用于发现潜力市场、验证竞争格局、完成属性标注与交叉分析，并输出 Go/No-Go 结论及标准化市场调研交付物。
+name: amazon-product-phase1-research
+description: "亚马逊精益开发 Phase 1：基于 Sorftime MCP 的亚马逊选品分析 Skill，用于发现潜力市场、验证竞争格局、完成属性标注与交叉分析，并输出 Go/No-Go 结论及标准化市场调研交付物。"
 argument-hint: "[产品/类目关键词] [站点]"
 user-invocable: true
 ---
 
-# 选品分析器
+# 选品分析器（精益开发 Phase 1）
 
 ## 定位
 
-`zach-product-research` 用于亚马逊新品上架工作流的第一步：先判断市场值不值得进入，再决定后续是否投入竞品拆解、定价、Listing 文案和广告预算。
+`amazon-product-phase1-research` 是精益产品开发闭环的**第一阶段**，用于亚马逊新品上架工作流的第一步：先判断市场值不值得进入，再决定后续是否投入竞品拆解、定价、Listing 文案和广告预算。
 
 核心目标：
 
@@ -36,7 +36,7 @@ user-invocable: true
 
 ### 方式1：指定产品和站点
 ```
-/zach-product-research bluetooth speaker US
+/amazon-product-phase1-research bluetooth speaker US
 ```
 
 ### 方式2：自然语言
@@ -53,7 +53,7 @@ user-invocable: true
 
 当调用此 Skill 时，执行以下流程：
 
-1. **读取完整方法论** - 加载 `skills/zach-product-research/SKILL.md`
+1. **读取完整方法论** - 加载 `skills/amazon-product-phase1-research/SKILL.md`
 2. **信息收集** - 交互式确认目标站点、选品场景、约束条件
 3. **调用 Sorftime MCP** - 按方法论调用数据工具（⛔ 必调：`category_search_from_product_name`、`category_report`、`category_trend`、`keyword_detail`、`product_reviews`、`product_detail`）
 4. **市场机会发现** - 类目扫描 + 关键词多维度对比 + 潜力产品预筛
@@ -78,7 +78,7 @@ user-invocable: true
 
 ## 下游对接
 
-选品报告可作为后续 Listing 优化、定价策略、广告策略的输入。
+选品报告 → `amazon-product-phase2-demand-validator`（Phase 2：需求验证）→ `amazon-product-phase3-mvp-blueprint`（Phase 3：MVP 蓝图）
 
 ## 数据诚信规则
 
@@ -88,4 +88,4 @@ user-invocable: true
 
 ## 完整方法论
 
-详见 `skills/zach-product-research/SKILL.md`
+详见 `skills/amazon-product-phase1-research/SKILL.md`

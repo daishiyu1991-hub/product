@@ -1,5 +1,5 @@
 ---
-name: lean-product-develop-iteration-playbook
+name: amazon-product-phase5-iteration-playbook
 description: "亚马逊精益开发 Phase 5：基于上架复盘数据，生成可执行的迭代优化方案。用 Impact x Effort 矩阵排序优先级，覆盖 Listing 优化、产品改良、广告策略、变体扩展四大方向，输出 30 天行动计划。优先调用 Sorftime MCP；无 Sorftime 时降级为 WebSearch + 用户手动输入。"
 argument-hint: "[ASIN] [站点] [--review-report 复盘报告路径] [--focus listing|product|ads|expansion]"
 user-invocable: true
@@ -9,7 +9,7 @@ user-invocable: true
 
 ## 定位
 
-`lean-product-develop-iteration-playbook` 是精益产品开发闭环的第五阶段。基于复盘数据，回答一个关键问题：**下一个 30 天应该优先做什么？**
+`amazon-product-phase5-iteration-playbook` 是精益产品开发闭环的第五阶段。基于复盘数据（Phase 4：`amazon-product-phase4-launch-review`），回答一个关键问题：**下一个 30 天应该优先做什么？**
 
 将复盘中发现的问题转化为排过优先级的、具体可执行的优化行动项。
 
@@ -31,12 +31,12 @@ user-invocable: true
 
 ### 方式1：指定 ASIN 和聚焦方向
 ```
-/lean-product-develop-iteration-playbook B0XXXXXXXX US --focus listing
+/amazon-product-phase5-iteration-playbook B0XXXXXXXX US --focus listing
 ```
 
 ### 方式2：关联复盘报告
 ```
-/lean-product-develop-iteration-playbook B0XXXXXXXX US --review-report ./工作成果/brands/AORYVIC/精益开发/bluetooth-speaker/launch-review/
+/amazon-product-phase5-iteration-playbook B0XXXXXXXX US --review-report ./工作成果/brands/AORYVIC/精益开发/bluetooth-speaker/launch-review/
 ```
 
 ### 方式3：自然语言
@@ -48,8 +48,8 @@ user-invocable: true
 
 当调用此 Skill 时，执行以下流程：
 
-1. **读取完整方法论** — 加载 `skills/lean-product-develop-iteration-playbook/SKILL.md`
-2. **读取复盘数据** — 加载 launch-review 的复盘报告
+1. **读取完整方法论** — 加载 `skills/amazon-product-phase5-iteration-playbook/SKILL.md`
+2. **读取复盘数据** — 加载 launch-review（Phase 4）的复盘报告
 3. **优化优先级排序** — Impact x Effort 矩阵，四大方向评估
 4. **Listing 优化方案** — 标题/图片/A+/五点/价格策略
 5. **产品改良方案** — 差评主题映射 + 改良优先级
@@ -66,11 +66,13 @@ user-invocable: true
 | 矩阵 | `[日期]_[站点]_[ASIN]_迭代优先级.xlsx` | Impact x Effort 矩阵 |
 | 计划 | `[日期]_[站点]_[ASIN]_30天行动计划.md` | 每周任务清单 |
 
-## 下游对接
+## 上下游对接
 
-- 迭代优化完成后 → 产品进入下一轮 `lean-product-develop-launch-review` 复盘
-- 如果多轮迭代后表现稳定 → 进入 `lean-product-develop-scale-decision`（规模化决策）
+- 上游：`amazon-product-phase4-launch-review`（Phase 4：上架复盘）
+- 下游：
+  - 迭代优化完成后 → 产品进入下一轮 `amazon-product-phase4-launch-review`（Phase 4）复盘
+  - 如果多轮迭代后表现稳定 → 进入 `amazon-product-phase6-scale-decision`（Phase 6：规模化决策）
 
 ## 完整方法论
 
-详见 `skills/lean-product-develop-iteration-playbook/SKILL.md`
+详见 `skills/amazon-product-phase5-iteration-playbook/SKILL.md`

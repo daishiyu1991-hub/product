@@ -1,5 +1,5 @@
 ---
-name: lean-product-develop-launch-review
+name: amazon-product-phase4-launch-review
 description: "亚马逊精益开发 Phase 4：产品上架后 30/60/90 天数据复盘。采集核心指标（BSR/转化率/ACOS/Review），对照 MVP 蓝图测试标准，执行 Kill/Continue/Pivot 决策框架。优先调用 Sorftime MCP 获取产品数据；无 Sorftime 时支持用户手动输入 Seller Central 数据。"
 argument-hint: "[ASIN] [站点] [--days 复盘天数] [--mvp-blueprint 蓝图路径]"
 user-invocable: true
@@ -9,9 +9,9 @@ user-invocable: true
 
 ## 定位
 
-`lean-product-develop-launch-review` 是精益产品开发闭环的第四阶段。产品上架后，用数据回答一个关键问题：**这个产品该继续还是该杀掉？**
+`amazon-product-phase4-launch-review` 是精益产品开发闭环的第四阶段。产品上架后，用数据回答一个关键问题：**这个产品该继续还是该杀掉？**
 
-通过对照 MVP 蓝图中设定的测试标准，客观评估产品表现，做出 Kill / Continue / Pivot 决策。
+通过对照 MVP 蓝图（Phase 3：`amazon-product-phase3-mvp-blueprint`）中设定的测试标准，客观评估产品表现，做出 Kill / Continue / Pivot 决策。
 
 ## 适用场景
 
@@ -30,12 +30,12 @@ user-invocable: true
 
 ### 方式1：指定 ASIN
 ```
-/lean-product-develop-launch-review B0XXXXXXXX US --days 30
+/amazon-product-phase4-launch-review B0XXXXXXXX US --days 30
 ```
 
 ### 方式2：关联 MVP 蓝图
 ```
-/lean-product-develop-launch-review B0XXXXXXXX US --days 60 --mvp-blueprint ./工作成果/brands/AORYVIC/精益开发/bluetooth-speaker/mvp-blueprint/
+/amazon-product-phase4-launch-review B0XXXXXXXX US --days 60 --mvp-blueprint ./工作成果/brands/AORYVIC/精益开发/bluetooth-speaker/mvp-blueprint/
 ```
 
 ### 方式3：自然语言
@@ -47,8 +47,8 @@ user-invocable: true
 
 当调用此 Skill 时，执行以下流程：
 
-1. **读取完整方法论** — 加载 `skills/lean-product-develop-launch-review/SKILL.md`
-2. **读取基线** — 加载 MVP 蓝图中的测试标准作为对照基线
+1. **读取完整方法论** — 加载 `skills/amazon-product-phase4-launch-review/SKILL.md`
+2. **读取基线** — 加载 MVP 蓝图（Phase 3）中的测试标准作为对照基线
 3. **核心指标采集** — Sorftime（product_detail/product_trend/product_reviews）或用户手动输入
 4. **流量分析** — 自然流量关键词排名 + 广告数据（ACOS/TACoS/CPC/CTR）
 5. **转化分析** — 转化率 vs 品类平均，趋势分析
@@ -64,11 +64,13 @@ user-invocable: true
 | 报告 | `[日期]_[站点]_[ASIN]_上架复盘_[天数]天.md` | 复盘报告 |
 | 数据 | `[日期]_[站点]_[ASIN]_复盘数据.xlsx` | 指标明细+趋势 |
 
-## 下游对接
+## 上下游对接
 
-- Continue 决策 → `lean-product-develop-iteration-playbook`（迭代优化）
-- Pivot 决策 → 修改产品后重新进入 launch-review
-- Kill 决策 → 清库存退出，资源释放给新品
+- 上游：`amazon-product-phase3-mvp-blueprint`（Phase 3：MVP 蓝图 → 测试标准基线）
+- 下游：
+  - Continue 决策 → `amazon-product-phase5-iteration-playbook`（Phase 5：迭代优化）
+  - Pivot 决策 → 修改产品后重新进入 launch-review
+  - Kill 决策 → 清库存退出，资源释放给新品
 
 ## 数据诚信规则
 
@@ -78,4 +80,4 @@ user-invocable: true
 
 ## 完整方法论
 
-详见 `skills/lean-product-develop-launch-review/SKILL.md`
+详见 `skills/amazon-product-phase4-launch-review/SKILL.md`
