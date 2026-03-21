@@ -1,0 +1,100 @@
+[
+  {
+    "label": "minimal_45deg",
+    "group": "style_minimal",
+    "prompt": "A handheld garment steamer for home use. Compact upright design with integrated water tank and steam head. Made of matte-finish ABS plastic with silicone grip. In soft mint green and white colorway. Minimalist industrial design aesthetic. Clean lines, simple geometry, Scandinavian design influence. Understated elegance with focus on form and function. Three-quarter hero shot, 45-degree angle, dynamic and engaging perspective. Pure white studio background, infinite curve backdrop, professional product photography setup. Professional product photography, studio lighting setup with soft diffusion, photorealistic rendering, highly detailed surface textures, 8K quality, clean sharp focus, subtle shadows and reflections.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "minimal_front",
+    "group": "style_minimal",
+    "prompt": "A handheld garment steamer for home use. Compact upright form with smooth continuous surface, integrated water tank, ergonomic handle. Made of matte ABS plastic with silicone accents. In soft white and mint green colorway. Minimalist Scandinavian design, clean geometry, no unnecessary details. Straight-on front view, eye level, centered composition. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "organic_45deg",
+    "group": "style_organic",
+    "prompt": "A handheld garment steamer with organic flowing curves and biomorphic design. Smooth pebble-like body shape that fits naturally in the hand. Soft matte finish in warm coral pink and cream white. Nature-inspired flowing forms, smooth transitions between surfaces, no sharp edges. The water tank integrates seamlessly into the body shape. Organic design aesthetic, biomimetic, nature-inspired. Three-quarter hero shot, 45-degree angle. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "organic_front",
+    "group": "style_organic",
+    "prompt": "A handheld garment steamer with organic biomorphic design. Smooth rounded body like a river stone, ergonomic curves that fit the palm. In warm coral pink and cream white with soft-touch matte finish. The steam head flows naturally from the body. Organic design aesthetic, flowing forms, soft edges. Straight-on front view, eye level. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "cute_45deg",
+    "group": "style_cute",
+    "prompt": "A handheld garment steamer with kawaii cute design aesthetic. Rounded blob-like compact form, pastel lavender purple and white body. Friendly face-like feature placement with LED indicator as a subtle smile or eye. Toy-like proportions, approachable and smile-inducing. Small enough to hold in one hand. Smooth glossy pastel finish. Three-quarter hero shot, 45-degree angle. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "dyson_45deg",
+    "group": "style_dyson",
+    "prompt": "A handheld garment steamer inspired by Dyson design language. Bold engineering-forward form with visible steam channel mechanics. Transparent polycarbonate section showing internal steam pathway. Distinctive color blocking with silver metallic body and purple accent ring. Cyclone-inspired circular steam head design. Premium futuristic feel. Three-quarter hero shot, 45-degree angle. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "dyson_front",
+    "group": "style_dyson",
+    "prompt": "A handheld garment steamer inspired by Dyson design language. Engineering-forward form, transparent polycarbonate water tank section, silver metallic body, purple accent details. The steam head has a distinctive circular or aerodynamic shape. Premium and futuristic. Straight-on front view, eye level. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "muji_45deg",
+    "group": "style_muji",
+    "prompt": "A handheld garment steamer inspired by MUJI no-brand minimalism. Extremely simple rectangular form with rounded corners. Natural matte white body with no logos, no decoration. Understated and anonymous design. Warm neutral palette, anti-design philosophy. Simple intuitive controls, one button. The beauty is in the absence of design. Three-quarter hero shot, 45-degree angle. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "retro_45deg",
+    "group": "style_retro",
+    "prompt": "A handheld garment steamer with retro-futuristic mid-century modern design. Warm cream body with chrome accents and Art Deco geometric patterns. Rounded edges, nostalgic yet forward-looking. Toggle switch and analog temperature dial. Chrome-plated steam head. Vintage color palette: cream, chrome silver, and warm orange accents. Three-quarter hero shot, 45-degree angle. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "luxury_45deg",
+    "group": "style_luxury",
+    "prompt": "A handheld garment steamer with premium luxury design aesthetic. Brushed rose gold metallic body with matte black leather-wrapped handle. Gold accent ring around the steam head. Minimalist form with exquisite surface finishing. Haute couture fashion accessory feel, like it belongs on a vanity. Premium materials and meticulous craftsmanship. Three-quarter hero shot, 45-degree angle. Dark moody studio background, dramatic spot lighting. Professional product photography, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "scene_bedroom_morning",
+    "group": "lifestyle",
+    "prompt": "A stylish woman in a bright modern bedroom using a compact mint green handheld garment steamer on a blouse hanging on a door hanger. Morning light streaming through sheer curtains. She is quickly steaming wrinkles before heading to work. The steamer looks like a cute lifestyle accessory. Warm, aspirational lifestyle photography, editorial quality, 8K, photorealistic.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  },
+  {
+    "label": "scene_travel",
+    "group": "lifestyle",
+    "prompt": "A compact handheld garment steamer next to an open suitcase on a hotel bed. The steamer is small and travel-friendly in white and mint green. A freshly steamed shirt hangs nearby. Bright hotel room with clean modern decor. Travel lifestyle photography showing portability and convenience. Editorial quality, warm lighting, 8K, photorealistic.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  },
+  {
+    "label": "color_variants",
+    "group": "marketing",
+    "prompt": "Three handheld garment steamers in a row on white background, showing color variants. Left: mint green with white accents. Center: soft pink (rose) with white accents. Right: classic white with silver accents. All same sleek compact design with clean minimalist form. Equal spacing. Studio lighting, commercial catalog photography, photorealistic, 8K quality.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  },
+  {
+    "label": "accessories_flatlay",
+    "group": "marketing",
+    "prompt": "Top-down flat lay product photography on white background. Center: a sleek compact handheld garment steamer in mint green. Surrounding it: accessories including fabric brush attachment, lint brush, measuring cup, travel pouch, user manual. Neatly organized with equal spacing. Studio lighting, catalog quality, photorealistic, 8K.",
+    "aspect_ratio": "1:1",
+    "resolution": "2K"
+  }
+]

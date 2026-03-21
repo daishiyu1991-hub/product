@@ -1,0 +1,30 @@
+[
+  {
+    "label": "design_B_side",
+    "group": "concept_B",
+    "prompt": "Handheld garment steamer, mint green, side profile. Classic steamer silhouette, ergonomic angled handle. Vertical glowing LED water window strip visible on edge. White steam plate. Simple geometry. Side view, white background, product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_C_45deg",
+    "group": "concept_C",
+    "prompt": "Handheld garment steamer, matte white with a warm gray woven fabric band around the middle body as grip zone. Classic garment steamer form, brushed steel steam plate. Simple rounded rectangle body. The fabric band is the one signature detail. 45-degree angle hero shot, white background, product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_C_front",
+    "group": "concept_C",
+    "prompt": "Handheld garment steamer, matte white body, gray woven fabric band in the middle as grip and brand identity detail. Classic steamer shape. Brushed stainless steel steam plate. Simple geometry. Front view, white background, product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "ergonomic_wrist_demo",
+    "group": "ergonomics",
+    "prompt": "Ergonomic demonstration photo showing a hand holding a white handheld garment steamer steaming a hanging shirt. The wrist is in a natural comfortable neutral position, not bent or strained. The handle angle perfectly supports the vertical steaming motion. Clean bright background, informational product photography, photorealistic, 8K.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  }
+]

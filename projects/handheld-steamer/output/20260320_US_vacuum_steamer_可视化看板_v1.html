@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacuum Steamer 美国站 - 可视化数据看板</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --primary: #3b82f6;
+    --primary-dark: #1e40af;
+    --success: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #0f172a;
+    --card-bg: #1e293b;
+    --card-border: #334155;
+    --text: #f1f5f9;
+    --text-dim: #94a3b8;
+    --accent: #818cf8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Top Bar */
+  .topbar {
+    background: linear-gradient(90deg, var(--primary-dark), #6366f1);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .topbar h1 { font-size: 20px; font-weight: 700; }
+  .topbar .meta { font-size: 12px; opacity: 0.8; }
+  .topbar .go-badge {
+    background: rgba(34,197,94,0.2);
+    color: var(--success);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    border: 1px solid rgba(34,197,94,0.3);
+  }
+
+  /* Dashboard Grid */
+  .dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 20px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    border-radius: 12px 12px 0 0;
+  }
+  .card-title {
+    font-size: 13px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+  .card-chart { position: relative; width: 100%; }
+
+  /* Span helpers */
+  .span-3 { grid-column: span 3; }
+  .span-4 { grid-column: span 4; }
+  .span-6 { grid-column: span 6; }
+  .span-8 { grid-column: span 8; }
+  .span-12 { grid-column: span 12; }
+
+  /* KPI Cards */
+  .kpi { text-align: center; }
+  .kpi .value {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .kpi .unit { font-size: 14px; color: var(--text-dim); margin-top: 4px; }
+  .kpi .change {
+    font-size: 12px;
+    margin-top: 8px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  .kpi .change.up { background: rgba(34,197,94,0.15); color: var(--success); }
+  .kpi .change.down { background: rgba(239,68,68,0.15); color: var(--danger); }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    text-align: left;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .data-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(51,65,85,0.5);
+  }
+  .data-table tr:hover td { background: rgba(59,130,246,0.05); }
+  .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .tag-green { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .tag-yellow { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .tag-red { background: rgba(239,68,68,0.15); color: #f87171; }
+  .tag-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+
+  /* Pain bar */
+  .pain-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0;
+    font-size: 12px;
+  }
+  .pain-bar .bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--danger);
+    opacity: 0.8;
+  }
+  .pain-bar .label { min-width: 130px; color: var(--text-dim); }
+  .pain-bar .severity { min-width: 20px; text-align: right; }
+
+  /* Tabs */
+  .tab-group { display: flex; gap: 4px; margin-bottom: 16px; }
+  .tab-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--card-border);
+    background: transparent;
+    color: var(--text-dim);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { border-color: var(--primary); color: var(--text); }
+  .tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Section */
+  .section-title {
+    grid-column: span 12;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    padding: 8px 0 0;
+    border-top: 1px solid var(--card-border);
+    margin-top: 8px;
+  }
+
+  /* Footer */
+  .footer {
+    grid-column: span 12;
+    text-align: center;
+    padding: 16px;
+    color: var(--text-dim);
+    font-size: 11px;
+    border-top: 1px solid var(--card-border);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .span-3, .span-4, .span-6, .span-8 { grid-column: span 6; }
+  }
+  @media (max-width: 640px) {
+    .dashboard { padding: 12px; gap: 12px; }
+    .span-3, .span-4, .span-6, .span-8, .span-12 { grid-column: span 12; }
+    .kpi .value { font-size: 28px; }
+    .topbar { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div>
+    <h1>🔬 Vacuum Steamer 美国站数据看板</h1>
+    <div class="meta">数据来源：Sorftime MCP | 更新日期：2026-03-20</div>
+  </div>
+  <div class="go-badge">✅ 综合评分 7.3/10 — 有条件 Go</div>
+</div>
+
+<div class="dashboard">
+
+  <!-- KPI Row -->
+  <div class="card span-3 kpi">
+    <div class="card-title">核心词月搜索量</div>
+    <div class="value">9,469</div>
+    <div class="unit">vacuum steamer</div>
+    <div class="change up">↑ 40x YoY</div>
+  </div>
+  <div class="card span-3 kpi">
+    <div class="card-title">类目月销额</div>
+    <div class="value">$11.0M</div>
+    <div class="unit">Steam Mops Top100</div>
+    <div class="change up">↑ 30% YoY</div>
+  </div>
+  <div class="card span-3 kpi">
+    <div class="card-title">新品销量占比</div>
+    <div class="value">26.7%</div>
+    <div class="unit">Steam Mops 类目</div>
+    <div class="change up">↑ 150% vs 2024</div>
+  </div>
+  <div class="card span-3 kpi">
+    <div class="card-title">搜索页低评价占比</div>
+    <div class="value">100%</div>
+    <div class="unit">评论数<100 的产品</div>
+    <div class="change up">零壁垒</div>
+  </div>
+
+  <!-- Section: Search Trend -->
+  <div class="section-title">📈 搜索 & 销量趋势</div>
+
+  <!-- Search Volume Trend Chart -->
+  <div class="card span-6">
+    <div class="card-title">"vacuum steamer" 月搜索量趋势</div>
+    <div class="card-chart">
+      <canvas id="searchTrendChart" height="260"></canvas>
+    </div>
+  </div>
+
+  <!-- Category Sales Trend -->
+  <div class="card span-6">
+    <div class="card-title">Steam Mops 类目月销量趋势</div>
+    <div class="card-chart">
+      <canvas id="categorySalesChart" height="260"></canvas>
+    </div>
+  </div>
+
+  <!-- New Product Share Trend -->
+  <div class="card span-6">
+    <div class="card-title">新品销量占比趋势 (Steam Mops)</div>
+    <div class="card-chart">
+      <canvas id="newProductChart" height="260"></canvas>
+    </div>
+  </div>
+
+  <!-- Avg Price Trend -->
+  <div class="card span-6">
+    <div class="card-title">均价趋势 (Steam Mops)</div>
+    <div class="card-chart">
+      <canvas id="avgPriceChart" height="260"></canvas>
+    </div>
+  </div>
+
+  <!-- Section: Keywords -->
+  <div class="section-title">🔤 关键词矩阵</div>
+
+  <!-- Keyword Bubble Chart -->
+  <div class="card span-8">
+    <div class="card-title">关键词搜索量 vs CPC 气泡图</div>
+    <div class="card-chart">
+      <canvas id="keywordBubbleChart" height="320"></canvas>
+    </div>
+  </div>
+
+  <!-- Keyword Table -->
+  <div class="card span-4">
+    <div class="card-title">关键词数据表</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>关键词</th><th class="num">月搜索</th><th class="num">CPC</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>steam cleaner</td><td class="num">530,968</td><td class="num">$1.53</td></tr>
+        <tr><td>steam mop</td><td class="num">276,501</td><td class="num">$1.41</td></tr>
+        <tr><td>floor steamer</td><td class="num">60,458</td><td class="num">$1.51</td></tr>
+        <tr><td>bissell steam cleaner</td><td class="num">59,776</td><td class="num">$0.94</td></tr>
+        <tr><td>dupray steam cleaner</td><td class="num">54,361</td><td class="num">$9.58</td></tr>
+        <tr><td>steam vacuum cleaner</td><td class="num">21,407</td><td class="num">$1.99</td></tr>
+        <tr><td>steamer cleaner</td><td class="num">18,545</td><td class="num">$1.40</td></tr>
+        <tr style="background: rgba(59, 130, 246, 0.1);">
+          <td><strong>vacuum steamer</strong></td><td class="num"><strong>9,469</strong></td><td class="num"><strong>$1.84</strong></td>
+        </tr>
+        <tr><td>steam vacuum</td><td class="num">8,574</td><td class="num">$1.23</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section: Competition -->
+  <div class="section-title">🏆 竞争格局</div>
+
+  <!-- Competitor Table -->
+  <div class="card span-8">
+    <div class="card-title">$20-50 价位段竞品一览</div>
+    <div class="tab-group">
+      <button class="tab-btn active" onclick="showTab('tab-all')">全部</button>
+      <button class="tab-btn" onclick="showTab('tab-cleaner')">蒸汽清洁器</button>
+      <button class="tab-btn" onclick="showTab('tab-garment')">衣物挂烫机</button>
+    </div>
+    <div id="tab-all" class="tab-content active">
+      <table class="data-table">
+        <thead><tr><th>ASIN</th><th>品牌</th><th class="num">价格</th><th class="num">月销</th><th>星级</th><th class="num">评论</th><th>类型</th></tr></thead>
+        <tbody>
+          <tr><td>B0GFNBBBJX</td><td>HiLIFE</td><td class="num">$29.99</td><td class="num">57,600</td><td>⭐4.6</td><td class="num">130,054</td><td><span class="tag tag-blue">挂烫机</span></td></tr>
+          <tr><td>B0DCF593FL</td><td>HiLIFE</td><td class="num">$42.99</td><td class="num">57,600</td><td>⭐4.1</td><td class="num">131,126</td><td><span class="tag tag-blue">挂烫机</span></td></tr>
+          <tr><td>B0D1CCGJ5W</td><td>Tineco</td><td class="num">$29.99</td><td class="num">18,635</td><td>⭐4.8</td><td class="num">15,277</td><td><span class="tag tag-yellow">配件</span></td></tr>
+          <tr><td>B0CLRNZT78</td><td>OGHom</td><td class="num">$26.99</td><td class="num">15,705</td><td>⭐4.3</td><td class="num">74</td><td><span class="tag tag-blue">挂烫机</span></td></tr>
+          <tr><td>B08P456NHG</td><td>BEAUTURAL</td><td class="num">$21.99</td><td class="num">14,359</td><td>⭐4.3</td><td class="num">15,903</td><td><span class="tag tag-blue">挂烫机</span></td></tr>
+          <tr style="background: rgba(34,197,94,0.08);"><td>B0DGQ7L856</td><td><strong>CURMEDI</strong></td><td class="num"><strong>$43.99</strong></td><td class="num"><strong>13,431</strong></td><td>⭐4.1</td><td class="num">1,003</td><td><span class="tag tag-green">清洁器</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="tab-cleaner" class="tab-content">
+      <table class="data-table">
+        <thead><tr><th>ASIN</th><th>品牌</th><th class="num">价格</th><th class="num">月销</th><th>星级</th><th class="num">评论</th></tr></thead>
+        <tbody>
+          <tr><td>B0DGQ7L856</td><td>CURMEDI</td><td class="num">$43.99</td><td class="num">13,431</td><td>⭐4.1</td><td class="num">1,003</td></tr>
+        </tbody>
+      </table>
+      <p style="color: var(--text-dim); font-size: 12px; margin-top: 12px; padding: 12px; background: rgba(34,197,94,0.05); border-radius: 8px;">
+        🎯 $20-50 价位仅 CURMEDI 1 款手持蒸汽清洁器，竞争极度分散，是理想切入点。
+      </p>
+    </div>
+    <div id="tab-garment" class="tab-content">
+      <table class="data-table">
+        <thead><tr><th>ASIN</th><th>品牌</th><th class="num">价格</th><th class="num">月销</th><th>星级</th><th class="num">评论</th></tr></thead>
+        <tbody>
+          <tr><td>B0GFNBBBJX</td><td>HiLIFE</td><td class="num">$29.99</td><td class="num">57,600</td><td>⭐4.6</td><td class="num">130,054</td></tr>
+          <tr><td>B0DCF593FL</td><td>HiLIFE</td><td class="num">$42.99</td><td class="num">57,600</td><td>⭐4.1</td><td class="num">131,126</td></tr>
+          <tr><td>B0CLRNZT78</td><td>OGHom</td><td class="num">$26.99</td><td class="num">15,705</td><td>⭐4.3</td><td class="num">74</td></tr>
+          <tr><td>B08P456NHG</td><td>BEAUTURAL</td><td class="num">$21.99</td><td class="num">14,359</td><td>⭐4.3</td><td class="num">15,903</td></tr>
+        </tbody>
+      </table>
+      <p style="color: var(--text-dim); font-size: 12px; margin-top: 12px; padding: 12px; background: rgba(239,68,68,0.05); border-radius: 8px;">
+        ⚠️ HiLIFE 一家独大（13万+评价），评价壁垒极高，不建议正面竞争。
+      </p>
+    </div>
+  </div>
+
+  <!-- Pain Points -->
+  <div class="card span-4">
+    <div class="card-title">竞品差评痛点 TOP8</div>
+    <div class="pain-bar">
+      <span class="label">漏水/吐水</span>
+      <div class="bar" style="width: 90px;"></div>
+      <span class="severity tag tag-red">严重</span>
+    </div>
+    <div class="pain-bar">
+      <span class="label">电路跳闸</span>
+      <div class="bar" style="width: 80px;"></div>
+      <span class="severity tag tag-red">严重</span>
+    </div>
+    <div class="pain-bar">
+      <span class="label">耐用性差</span>
+      <div class="bar" style="width: 75px;"></div>
+      <span class="severity tag tag-red">严重</span>
+    </div>
+    <div class="pain-bar">
+      <span class="label">配件松动</span>
+      <div class="bar" style="width: 55px;"></div>
+      <span class="severity tag tag-yellow">中等</span>
+    </div>
+    <div class="pain-bar">
+      <span class="label">水箱太小</span>
+      <div class="bar" style="width: 50px;"></div>
+      <span class="severity tag tag-yellow">中等</span>
+    </div>
+    <div class="pain-bar">
+      <span class="label">清洁力弱</span>
+      <div class="bar" style="width: 50px;"></div>
+      <span class="severity tag tag-yellow">中等</span>
+    </div>
+    <div class="pain-bar">
+      <span class="label">蒸汽控制差</span>
+      <div class="bar" style="width: 40px;"></div>
+      <span class="severity tag tag-yellow">中等</span>
+    </div>
+    <div class="pain-bar">
+      <span class="label">安全开关不便</span>
+      <div class="bar" style="width: 30px;"></div>
+      <span class="severity tag tag-green">轻微</span>
+    </div>
+    <p style="color: var(--text-dim); font-size: 11px; margin-top: 12px;">数据来源：CURMEDI B0DGQ7L856 + HiLIFE 差评分析 (Sorftime MCP)</p>
+  </div>
+
+  <!-- Section: Product Features -->
+  <div class="section-title">🧩 产品特征 & 供应链</div>
+
+  <!-- Feature Radar Chart -->
+  <div class="card span-6">
+    <div class="card-title">产品特征覆盖率雷达图</div>
+    <div class="card-chart">
+      <canvas id="featureRadarChart" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- 1688 Pricing -->
+  <div class="card span-6">
+    <div class="card-title">1688 采购价格参考</div>
+    <table class="data-table">
+      <thead><tr><th>产品类型</th><th class="num">人民币价格</th><th class="num">美元折算</th><th>适用场景</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>高压蒸汽清洁器</td><td class="num">¥40-130</td><td class="num">$5.5-18</td>
+          <td><span class="tag tag-green">✅ 目标产品</span></td>
+        </tr>
+        <tr>
+          <td>多功能手持蒸汽机</td><td class="num">¥67-185</td><td class="num">$9-25</td>
+          <td><span class="tag tag-green">✅ 目标产品</span></td>
+        </tr>
+        <tr>
+          <td>大型2L蒸汽清洁器</td><td class="num">¥327-428</td><td class="num">$45-59</td>
+          <td><span class="tag tag-yellow">⚠ 成本偏高</span></td>
+        </tr>
+        <tr>
+          <td>布艺清洗一体机</td><td class="num">¥230-694</td><td class="num">$32-96</td>
+          <td><span class="tag tag-red">❌ 超预算</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 20px;">
+      <div class="card-title">Steam Mops Top5 头部产品</div>
+      <table class="data-table">
+        <thead><tr><th>#</th><th>品牌</th><th class="num">月销</th><th class="num">价格</th><th class="num">评论</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Shark</td><td class="num">16,864</td><td class="num">$159</td><td class="num">1,918</td></tr>
+          <tr><td>2</td><td>Shark</td><td class="num">16,713</td><td class="num">N/A</td><td class="num">18,954</td></tr>
+          <tr><td>3</td><td>McCULLOCH</td><td class="num">8,108</td><td class="num">$139.99</td><td class="num">43,951</td></tr>
+          <tr><td>4</td><td>Bissell</td><td class="num">7,296</td><td class="num">N/A</td><td class="num">48,087</td></tr>
+          <tr><td>5</td><td>Bissell</td><td class="num">7,017</td><td class="num">$119.99</td><td class="num">1,923</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section: Score -->
+  <div class="section-title">🎯 综合评分与决策</div>
+
+  <!-- Score Chart -->
+  <div class="card span-6">
+    <div class="card-title">五维度评分雷达</div>
+    <div class="card-chart">
+      <canvas id="scoreRadarChart" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- Cost Breakdown -->
+  <div class="card span-6">
+    <div class="card-title">成本结构 & 盈利测算 <span class="tag tag-yellow">⚠️ 推测</span></div>
+    <div class="card-chart" style="margin-bottom: 16px;">
+      <canvas id="costPieChart" height="200"></canvas>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>场景</th><th class="num">月销量</th><th class="num">月营收</th><th class="num">毛利</th><th class="num">净利率</th></tr></thead>
+      <tbody>
+        <tr><td>保守</td><td class="num">1,000</td><td class="num">$42,990</td><td class="num">$14,040</td><td class="num">25.7%</td></tr>
+        <tr style="background: rgba(59,130,246,0.08);"><td><strong>基准</strong></td><td class="num"><strong>3,000</strong></td><td class="num"><strong>$128,970</strong></td><td class="num"><strong>$42,120</strong></td><td class="num"><strong>28.8%</strong></td></tr>
+        <tr><td>乐观</td><td class="num">8,000</td><td class="num">$343,920</td><td class="num">$112,320</td><td class="num">29.7%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    数据来源：Sorftime MCP | 报告日期：2026-03-20 | 版本：v1<br>
+    标注 ⚠️推测 的内容为基于行业经验估算，非 Sorftime 直接输出。市场数据具有时效性。
+  </div>
+
+</div>
+
+<script>
+// Chart defaults
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = 'rgba(51,65,85,0.5)';
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+
+// 1. Search Trend
+new Chart(document.getElementById('searchTrendChart'), {
+  type: 'line',
+  data: {
+    labels: ['24.03','24.07','24.11','25.01','25.02','25.03','25.07','25.08','25.11','26.01','26.02'],
+    datasets: [{
+      label: '月搜索量',
+      data: [585, 750, 1081, 2000, 5687, 24981, 19173, 23155, 22660, 20089, 17380],
+      fill: true,
+      backgroundColor: 'rgba(99,102,241,0.15)',
+      borderColor: '#818cf8',
+      borderWidth: 2,
+      pointBackgroundColor: '#818cf8',
+      pointRadius: 4,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `搜索量: ${ctx.parsed.y.toLocaleString()}`
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        ticks: { callback: v => v >= 1000 ? (v/1000)+'K' : v }
+      },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 2. Category Sales Trend
+new Chart(document.getElementById('categorySalesChart'), {
+  type: 'bar',
+  data: {
+    labels: ['24.03','24.07','24.11','25.03','25.07','25.11','26.01','26.02','26.03*'],
+    datasets: [{
+      label: 'Top100 月销量',
+      data: [84635, 112257, 116562, 110602, 160871, 127661, 96274, 104041, 61880],
+      backgroundColor: [
+        'rgba(59,130,246,0.6)','rgba(59,130,246,0.6)','rgba(59,130,246,0.6)',
+        'rgba(99,102,241,0.7)','rgba(99,102,241,0.7)','rgba(99,102,241,0.7)',
+        'rgba(139,92,246,0.7)','rgba(139,92,246,0.7)','rgba(139,92,246,0.4)'
+      ],
+      borderColor: 'rgba(99,102,241,0.8)',
+      borderWidth: 1,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => `销量: ${ctx.parsed.y.toLocaleString()}`,
+          afterLabel: ctx => ctx.dataIndex === 8 ? '* 月中数据' : ''
+        }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        ticks: { callback: v => (v/1000)+'K' }
+      },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 3. New Product Share Trend
+new Chart(document.getElementById('newProductChart'), {
+  type: 'line',
+  data: {
+    labels: ['24.03','24.06','25.03','25.06','25.08','26.01','26.03'],
+    datasets: [{
+      label: '新品销量占比',
+      data: [11.82, 8.38, 11.90, 21.03, 27.52, 31.04, 26.73],
+      fill: true,
+      backgroundColor: 'rgba(34,197,94,0.15)',
+      borderColor: '#22c55e',
+      borderWidth: 2,
+      pointBackgroundColor: '#22c55e',
+      pointRadius: 5,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: ctx => `新品占比: ${ctx.parsed.y}%` }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 35,
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        ticks: { callback: v => v + '%' }
+      },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 4. Avg Price Trend
+new Chart(document.getElementById('avgPriceChart'), {
+  type: 'line',
+  data: {
+    labels: ['24.03','24.07','25.01','25.08','25.11','26.03'],
+    datasets: [{
+      label: '均价',
+      data: [93.10, 87.04, 100.63, 103.31, 91.34, 83.03],
+      fill: false,
+      borderColor: '#f59e0b',
+      borderWidth: 2,
+      pointBackgroundColor: '#f59e0b',
+      pointRadius: 5,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: ctx => `均价: $${ctx.parsed.y.toFixed(2)}` }
+      }
+    },
+    scales: {
+      y: {
+        min: 70, max: 110,
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        ticks: { callback: v => '$' + v }
+      },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 5. Keyword Bubble Chart (scatter)
+new Chart(document.getElementById('keywordBubbleChart'), {
+  type: 'bubble',
+  data: {
+    datasets: [
+      {label:'steam cleaner', data:[{x:530968, y:1.53, r:30}], backgroundColor:'rgba(239,68,68,0.5)'},
+      {label:'steam mop', data:[{x:276501, y:1.41, r:22}], backgroundColor:'rgba(249,115,22,0.5)'},
+      {label:'floor steamer', data:[{x:60458, y:1.51, r:12}], backgroundColor:'rgba(245,158,11,0.5)'},
+      {label:'steam vacuum cleaner', data:[{x:21407, y:1.99, r:8}], backgroundColor:'rgba(34,197,94,0.6)'},
+      {label:'steamer cleaner', data:[{x:18545, y:1.40, r:7}], backgroundColor:'rgba(34,197,94,0.6)'},
+      {label:'vacuum steamer', data:[{x:9469, y:1.84, r:8}], backgroundColor:'rgba(59,130,246,0.8)', borderColor:'#3b82f6', borderWidth:2},
+      {label:'steam vacuum', data:[{x:8574, y:1.23, r:6}], backgroundColor:'rgba(99,102,241,0.6)'},
+      {label:'dupray steam cleaner', data:[{x:54361, y:9.58, r:10}], backgroundColor:'rgba(168,85,247,0.5)'}
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => `${ctx.dataset.label}: 月搜索 ${ctx.parsed.x.toLocaleString()} | CPC $${ctx.parsed.y}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        type: 'logarithmic',
+        title: { display: true, text: '月搜索量 (log)', color: '#94a3b8' },
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        ticks: { callback: v => v >= 1000 ? (v/1000)+'K' : v }
+      },
+      y: {
+        title: { display: true, text: 'CPC ($)', color: '#94a3b8' },
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        ticks: { callback: v => '$' + v }
+      }
+    }
+  }
+});
+
+// 6. Feature Radar
+new Chart(document.getElementById('featureRadarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['无化学品清洁','多表面适用','快速加热','大容量水箱','可拆卸布垫','轻便便携','多功能配件','手持设计','可调蒸汽','长电源线'],
+    datasets: [{
+      label: '当前产品覆盖率',
+      data: [100, 94.1, 64.7, 58.8, 52.9, 47.1, 47.1, 41.2, 35.3, 35.3],
+      fill: true,
+      backgroundColor: 'rgba(99,102,241,0.2)',
+      borderColor: '#818cf8',
+      pointBackgroundColor: '#818cf8',
+      borderWidth: 2
+    },{
+      label: '建议目标配置',
+      data: [100, 100, 90, 80, 70, 80, 80, 100, 70, 50],
+      fill: true,
+      backgroundColor: 'rgba(34,197,94,0.1)',
+      borderColor: '#22c55e',
+      pointBackgroundColor: '#22c55e',
+      borderWidth: 2,
+      borderDash: [5, 5]
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 } } }
+    },
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 100,
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        angleLines: { color: 'rgba(51,65,85,0.3)' },
+        pointLabels: { font: { size: 10 }, color: '#94a3b8' },
+        ticks: { display: false }
+      }
+    }
+  }
+});
+
+// 7. Score Radar
+new Chart(document.getElementById('scoreRadarChart'), {
+  type: 'radar',
+  data: {
+    labels: ['市场规模与增长\n(25%)','竞争强度\n(25%)','新品友好度\n(20%)','利润空间\n(15%)','供应链可行性\n(15%)'],
+    datasets: [{
+      label: '评分',
+      data: [8, 7, 8, 6, 7],
+      fill: true,
+      backgroundColor: 'rgba(59,130,246,0.2)',
+      borderColor: '#3b82f6',
+      pointBackgroundColor: '#3b82f6',
+      pointRadius: 6,
+      borderWidth: 2
+    },{
+      label: 'Go 基准线',
+      data: [6.5, 6.5, 6.5, 6.5, 6.5],
+      fill: false,
+      borderColor: 'rgba(245,158,11,0.5)',
+      borderWidth: 1,
+      borderDash: [8, 4],
+      pointRadius: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 11 } } }
+    },
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 10,
+        grid: { color: 'rgba(51,65,85,0.3)' },
+        angleLines: { color: 'rgba(51,65,85,0.3)' },
+        pointLabels: { font: { size: 11 }, color: '#e2e8f0' },
+        ticks: { stepSize: 2, display: true, color: '#64748b', backdropColor: 'transparent' }
+      }
+    }
+  }
+});
+
+// 8. Cost Pie
+new Chart(document.getElementById('costPieChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['1688采购 $9.00','运费+头程 $5.50','FBA配送 $6.50','亚马逊佣金 $6.45','包装标签 $1.50','毛利 $14.04'],
+    datasets: [{
+      data: [9.00, 5.50, 6.50, 6.45, 1.50, 14.04],
+      backgroundColor: [
+        'rgba(239,68,68,0.7)',
+        'rgba(249,115,22,0.7)',
+        'rgba(245,158,11,0.7)',
+        'rgba(168,85,247,0.7)',
+        'rgba(100,116,139,0.7)',
+        'rgba(34,197,94,0.7)'
+      ],
+      borderColor: 'rgba(30,41,59,0.8)',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '55%',
+    plugins: {
+      legend: { position: 'right', labels: { font: { size: 11 }, boxWidth: 12, padding: 8 } },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const pct = ((ctx.parsed / 42.99) * 100).toFixed(1);
+            return `${ctx.label} (${pct}%)`;
+          }
+        }
+      }
+    }
+  }
+});
+
+// Tab switching
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>

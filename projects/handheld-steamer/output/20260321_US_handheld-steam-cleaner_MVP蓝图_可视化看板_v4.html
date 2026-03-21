@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handheld Steam Cleaner — MVP v4 可视化看板</title>
+<style>
+  /* ============ RESET & BASE ============ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #0f1219;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  /* ============ HEADER ============ */
+  .header {
+    background: linear-gradient(135deg, #0f1219 0%, #162231 50%, #0f1219 100%);
+    border-bottom: 2px solid #6ee7b7;
+    padding: 32px 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(110,231,183,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; position: relative; z-index: 1; }
+  .header h1 { font-size: 28px; color: #6ee7b7; font-weight: 700; letter-spacing: 1px; }
+  .header h1 span { color: #94a3b8; font-weight: 400; font-size: 16px; }
+  .header-meta { display: flex; gap: 24px; color: #94a3b8; font-size: 13px; }
+  .header-meta span { display: flex; align-items: center; gap: 6px; }
+  .version-badge {
+    background: linear-gradient(135deg, #6ee7b7, #34d399);
+    color: #0f1219;
+    padding: 4px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  /* ============ CONTAINER ============ */
+  .container { max-width: 1440px; margin: 0 auto; padding: 32px 24px 60px; }
+
+  /* ============ SECTION TITLES ============ */
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #6ee7b7;
+    margin: 48px 0 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(110,231,183,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .num {
+    background: #6ee7b7;
+    color: #0f1219;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* ============ TOP CARDS ============ */
+  .top-cards { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-top: 8px; }
+  .top-card {
+    background: linear-gradient(145deg, #1a2332 0%, #151d2b 100%);
+    border: 1px solid rgba(110,231,183,0.15);
+    border-radius: 14px;
+    padding: 20px 16px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .top-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(110,231,183,0.1); }
+  .top-card .label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .top-card .value { font-size: 32px; font-weight: 800; color: #6ee7b7; line-height: 1.1; }
+  .top-card .sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+  .top-card.go .value { color: #6ee7b7; }
+  .top-card.go { border-color: rgba(110,231,183,0.4); }
+
+  /* ============ PERSONA CARD (Sarah) ============ */
+  .persona-section { margin-top: 48px; }
+  .persona-card {
+    background: linear-gradient(145deg, #1a2332 0%, #162231 100%);
+    border: 2px solid rgba(110,231,183,0.3);
+    border-radius: 20px;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .persona-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle at top right, rgba(110,231,183,0.06), transparent 70%);
+  }
+  .persona-header {
+    background: linear-gradient(90deg, rgba(110,231,183,0.12), transparent);
+    padding: 24px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid rgba(110,231,183,0.1);
+  }
+  .persona-header .badge {
+    background: #6ee7b7;
+    color: #0f1219;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .persona-header h2 { font-size: 22px; color: #f1f5f9; }
+  .persona-header h2 em { color: #6ee7b7; font-style: normal; }
+  .persona-body { display: grid; grid-template-columns: 200px 1fr 1fr; gap: 0; padding: 0; position: relative; z-index: 1; }
+  .persona-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    border-right: 1px solid rgba(110,231,183,0.08);
+    background: rgba(0,0,0,0.15);
+  }
+  .avatar-circle {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    margin-bottom: 14px;
+    box-shadow: 0 0 40px rgba(110,231,183,0.2);
+  }
+  .avatar-name { font-size: 18px; font-weight: 700; color: #f1f5f9; }
+  .avatar-age { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+  .avatar-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 12px; }
+  .avatar-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(110,231,183,0.1);
+    color: #6ee7b7;
+    border: 1px solid rgba(110,231,183,0.2);
+  }
+  .persona-details { padding: 28px 28px; }
+  .persona-details h3 { font-size: 14px; color: #6ee7b7; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .detail-item { margin-bottom: 14px; }
+  .detail-item .dl { font-size: 11px; color: #64748b; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .detail-item .dv { font-size: 14px; color: #e2e8f0; line-height: 1.5; }
+  .detail-item .dv strong { color: #6ee7b7; }
+  .persona-right { padding: 28px 28px; border-left: 1px solid rgba(110,231,183,0.08); }
+  .persona-right h3 { font-size: 14px; color: #6ee7b7; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .pain-list { list-style: none; }
+  .pain-list li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 14px; display: flex; align-items: flex-start; gap: 8px; }
+  .pain-list li:last-child { border-bottom: none; }
+  .pain-num { min-width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .pain-num.red { background: #ef4444; color: #fff; }
+  .pain-num.yellow { background: #eab308; color: #0f1219; }
+  .pain-num.green { background: #22c55e; color: #0f1219; }
+  .decision-flow {
+    margin-top: 16px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #94a3b8;
+    line-height: 1.8;
+  }
+  .decision-flow .step { color: #6ee7b7; font-weight: 600; }
+  .unacceptable {
+    margin-top: 16px;
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .unacceptable h4 { color: #ef4444; font-size: 12px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+  .unacceptable p { font-size: 13px; color: #fca5a5; }
+
+  /* ============ SVG PRODUCT DIAGRAM ============ */
+  .svg-wrapper {
+    background: linear-gradient(145deg, #1a2332 0%, #151d2b 100%);
+    border: 1px solid rgba(110,231,183,0.15);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    overflow-x: auto;
+  }
+  .svg-wrapper svg { max-width: 100%; height: auto; }
+
+  /* ============ TABLES ============ */
+  .table-wrapper {
+    background: linear-gradient(145deg, #1a2332 0%, #151d2b 100%);
+    border: 1px solid rgba(110,231,183,0.12);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    background: rgba(110,231,183,0.08);
+    color: #6ee7b7;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(110,231,183,0.15);
+  }
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+    color: #cbd5e1;
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(110,231,183,0.03); }
+  .row-cut { opacity: 0.35; }
+  .row-cut td { text-decoration: line-through; color: #64748b; }
+  .row-highlight td { background: rgba(110,231,183,0.06); }
+  .star { color: #eab308; }
+  .tag-attack { background: #064e3b; color: #6ee7b7; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+  .tag-defend { background: #1e3a5f; color: #60a5fa; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+  .tag-hidden { background: #3f3f46; color: #a1a1aa; padding: 2px 8px; border-radius: 8px; font-size: 11px; font-weight: 600; }
+  .check { color: #6ee7b7; font-weight: 700; }
+  .cross { color: #ef4444; font-weight: 700; }
+
+  /* ============ SPEC COMPARE ============ */
+  .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .spec-col { padding: 0; }
+  .spec-col-header {
+    padding: 16px 20px;
+    font-weight: 700;
+    font-size: 15px;
+    text-align: center;
+  }
+  .spec-ours .spec-col-header { background: rgba(110,231,183,0.12); color: #6ee7b7; }
+  .spec-theirs .spec-col-header { background: rgba(239,68,68,0.1); color: #f87171; }
+  .spec-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-label {
+    padding: 12px 20px;
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    background: rgba(0,0,0,0.15);
+    border-right: 1px solid rgba(255,255,255,0.04);
+  }
+  .spec-val {
+    padding: 12px 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .spec-val.ours { color: #6ee7b7; background: rgba(110,231,183,0.04); }
+  .spec-val.theirs { color: #f87171; background: rgba(239,68,68,0.03); }
+  .spec-val.neutral { color: #94a3b8; background: rgba(255,255,255,0.02); }
+
+  /* ============ COST WATERFALL ============ */
+  .waterfall-chart {
+    background: linear-gradient(145deg, #1a2332 0%, #151d2b 100%);
+    border: 1px solid rgba(110,231,183,0.12);
+    border-radius: 14px;
+    padding: 32px;
+  }
+  .wf-bars { display: flex; align-items: flex-end; justify-content: center; gap: 12px; height: 260px; padding-bottom: 40px; position: relative; }
+  .wf-bar-group { display: flex; flex-direction: column; align-items: center; flex: 1; max-width: 100px; position: relative; height: 100%; justify-content: flex-end; }
+  .wf-bar {
+    width: 48px;
+    border-radius: 6px 6px 0 0;
+    position: relative;
+    transition: all 0.3s;
+    min-height: 8px;
+  }
+  .wf-bar:hover { filter: brightness(1.2); }
+  .wf-bar-val {
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .wf-bar-label {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #94a3b8;
+    text-align: center;
+    line-height: 1.3;
+    width: 80px;
+  }
+  .wf-bar.cost { background: linear-gradient(180deg, #60a5fa, #3b82f6); }
+  .wf-bar.cost .wf-bar-val { color: #93c5fd; }
+  .wf-bar.total { background: linear-gradient(180deg, #f87171, #ef4444); }
+  .wf-bar.total .wf-bar-val { color: #fca5a5; }
+  .wf-bar.price { background: linear-gradient(180deg, #6ee7b7, #34d399); }
+  .wf-bar.price .wf-bar-val { color: #6ee7b7; }
+  .wf-bar.profit { background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+  .wf-bar.profit .wf-bar-val { color: #fcd34d; }
+  .wf-legend { display: flex; justify-content: center; gap: 24px; margin-top: 16px; }
+  .wf-legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8; }
+  .wf-legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* ============ TEST CARDS ============ */
+  .test-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .test-card {
+    background: linear-gradient(145deg, #1a2332 0%, #151d2b 100%);
+    border: 1px solid rgba(110,231,183,0.1);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .test-card .metric { font-size: 12px; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .test-card .values { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .test-val { text-align: center; padding: 6px 8px; border-radius: 8px; }
+  .test-val .period { font-size: 10px; color: #64748b; }
+  .test-val .num { font-size: 16px; font-weight: 700; }
+  .test-val.pass { background: rgba(110,231,183,0.08); }
+  .test-val.pass .num { color: #6ee7b7; }
+  .test-val.fail { background: rgba(239,68,68,0.08); }
+  .test-val.fail .num { color: #f87171; }
+  .test-card.highlight-card { border-color: rgba(234,179,8,0.4); background: linear-gradient(145deg, #1f2937 0%, #1a2332 100%); }
+  .test-card.highlight-card .metric { color: #eab308; }
+
+  /* ============ SUPPLIER SCRIPT ============ */
+  .supplier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .supplier-col { }
+  .supplier-col-header {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .supplier-left .supplier-col-header { background: rgba(110,231,183,0.1); color: #6ee7b7; }
+  .supplier-right .supplier-col-header { background: rgba(96,165,250,0.1); color: #60a5fa; }
+  .supplier-item {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .supplier-pri { color: #6ee7b7; font-weight: 700; margin-right: 6px; }
+
+  /* ============ EVOLUTION TABLE ============ */
+  .evo-table th { font-size: 11px; }
+  .evo-table td { font-size: 13px; }
+  .evo-table .col-v4 { background: rgba(110,231,183,0.06); }
+  .evo-table .col-v4 td { color: #6ee7b7; font-weight: 600; }
+
+  /* ============ TIMELINE ============ */
+  .timeline {
+    position: relative;
+    padding: 20px 0 20px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #6ee7b7 0%, rgba(110,231,183,0.2) 100%);
+    border-radius: 2px;
+  }
+  .tl-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  .tl-item:nth-child(odd) { flex-direction: row; }
+  .tl-item:nth-child(even) { flex-direction: row-reverse; }
+  .tl-content {
+    width: 44%;
+    background: linear-gradient(145deg, #1a2332 0%, #151d2b 100%);
+    border: 1px solid rgba(110,231,183,0.12);
+    border-radius: 12px;
+    padding: 18px 22px;
+  }
+  .tl-item:nth-child(odd) .tl-content { margin-right: auto; }
+  .tl-item:nth-child(even) .tl-content { margin-left: auto; }
+  .tl-dot {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 16px;
+    height: 16px;
+    background: #6ee7b7;
+    border-radius: 50%;
+    border: 3px solid #0f1219;
+    z-index: 2;
+    top: 18px;
+  }
+  .tl-week { font-size: 12px; color: #6ee7b7; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+  .tl-title { font-size: 15px; font-weight: 600; color: #f1f5f9; margin-bottom: 4px; }
+  .tl-desc { font-size: 13px; color: #94a3b8; }
+  .tl-spacer { width: 12%; flex-shrink: 0; }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    text-align: center;
+    padding: 40px 20px 32px;
+    color: #475569;
+    font-size: 12px;
+    border-top: 1px solid rgba(110,231,183,0.08);
+    margin-top: 60px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1100px) {
+    .top-cards { grid-template-columns: repeat(3, 1fr); }
+    .persona-body { grid-template-columns: 1fr; }
+    .persona-avatar { border-right: none; border-bottom: 1px solid rgba(110,231,183,0.08); padding: 24px; flex-direction: row; gap: 20px; }
+    .persona-right { border-left: none; border-top: 1px solid rgba(110,231,183,0.08); }
+    .test-grid { grid-template-columns: repeat(2, 1fr); }
+    .supplier-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .top-cards { grid-template-columns: repeat(2, 1fr); }
+    .test-grid { grid-template-columns: 1fr; }
+    .timeline::before { left: 20px; }
+    .tl-item, .tl-item:nth-child(even) { flex-direction: column; padding-left: 48px; }
+    .tl-content { width: 100% !important; margin: 0 !important; }
+    .tl-dot { left: 20px; }
+    .tl-spacer { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== HEADER ==================== -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <h1>Handheld Steam Cleaner — MVP 产品蓝图 <span>可视化看板</span></h1>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span class="version-badge">V4</span>
+    </div>
+  </div>
+  <div class="header-meta" style="margin-top:12px;">
+    <span>&#128197; 2026-03-21</span>
+    <span>&#127463;&#127480; Amazon US</span>
+    <span>&#128640; lean-product-develop-mvp-blueprint v4 (14步)</span>
+    <span>&#128202; Sorftime MCP + 差评画像分析</span>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ==================== 1. TOP DATA CARDS ==================== -->
+<div class="section-title"><span class="num">1</span> 核心决策指标</div>
+<div class="top-cards">
+  <div class="top-card go">
+    <div class="label">Go / No-Go</div>
+    <div class="value">7.30</div>
+    <div class="sub">有条件 Go &#9989;</div>
+  </div>
+  <div class="top-card">
+    <div class="label">目标售价</div>
+    <div class="value" style="font-size:26px;">$39.99</div>
+    <div class="sub">~$44.99</div>
+  </div>
+  <div class="top-card">
+    <div class="label">首批投入</div>
+    <div class="value" style="font-size:26px;">$24k</div>
+    <div class="sub">500 件首批</div>
+  </div>
+  <div class="top-card">
+    <div class="label">基准回本</div>
+    <div class="value">6</div>
+    <div class="sub">个月 ($42.99/日均15单)</div>
+  </div>
+  <div class="top-card">
+    <div class="label">改良项数</div>
+    <div class="value">7</div>
+    <div class="sub">+&#165;19/件 中位</div>
+  </div>
+  <div class="top-card">
+    <div class="label">MVP 入选</div>
+    <div class="value">11</div>
+    <div class="sub">Must-have 功能</div>
+  </div>
+</div>
+
+<!-- ==================== 2. SARAH PERSONA ==================== -->
+<div class="section-title" style="margin-top:56px;"><span class="num">2</span> Primary Persona — 用户画像 <span style="background:rgba(110,231,183,0.15);color:#6ee7b7;padding:2px 10px;border-radius:10px;font-size:12px;font-weight:600;margin-left:8px;">v4 NEW</span></div>
+<div class="persona-card">
+  <div class="persona-header">
+    <span class="badge">PRIMARY ~65%</span>
+    <h2>"居家清洁妈妈 <em>Sarah</em>"</h2>
+  </div>
+  <div class="persona-body">
+    <!-- Avatar Column -->
+    <div class="persona-avatar">
+      <div class="avatar-circle">&#128105;&#8205;&#128052;</div>
+      <div class="avatar-name">Sarah</div>
+      <div class="avatar-age">28–42 岁 &middot; 已婚有孩</div>
+      <div class="avatar-tags">
+        <span class="avatar-tag">&#128118; 有 2-12 岁小孩</span>
+        <span class="avatar-tag">&#128054; 有宠物</span>
+        <span class="avatar-tag">&#127968; 公寓/独栋</span>
+        <span class="avatar-tag">&#128242; TikTok 重度用户</span>
+        <span class="avatar-tag">&#128154; 偏好家居感小家电</span>
+      </div>
+    </div>
+    <!-- Details Column -->
+    <div class="persona-details">
+      <h3>&#127919; 核心画像</h3>
+      <div class="detail-item">
+        <div class="dl">核心诉求</div>
+        <div class="dv">日常轻量清洁，不想用化学清洁剂（小孩+宠物安全顾虑），想要<strong>简单好用</strong>的蒸汽清洁工具</div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">审美偏好</div>
+        <div class="dv">清新、家居感、马卡龙色系。讨厌满屋"工具感"的家电。偏好<strong>"好看到可以不藏起来"</strong>的小家电</div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">价格敏感度</div>
+        <div class="dv"><strong>$30-45 舒适区</strong>，$50+ 犹豫，会和 CURMEDI $43.99 对比</div>
+      </div>
+      <div class="detail-item">
+        <div class="dl">使用场景 TOP3</div>
+        <div class="dv">&#129370; 厨房灶台油渍 &gt; &#128705; 浴室瓷砖缝 &gt; &#128715; 偶尔沙发/窗户</div>
+      </div>
+      <div class="decision-flow">
+        <strong style="color:#6ee7b7;">&#9889; 购买决策 — 3 分钟冲动型：</strong><br>
+        <span class="step">TikTok/Ins 看清洁视频</span> &rarr;
+        <span class="step">Amazon 搜索</span> &rarr;
+        <span class="step">按价格 $20-50</span> &rarr;
+        <span class="step">看主图+价格</span> &rarr;
+        <span class="step">扫前3条评价</span> &rarr;
+        <span class="step" style="color:#fcd34d;">3 分钟下单!</span>
+      </div>
+    </div>
+    <!-- Right Column: Pains & Unacceptable -->
+    <div class="persona-right">
+      <h3>&#128293; 痛点优先级</h3>
+      <ul class="pain-list">
+        <li><span class="pain-num red">1</span> <div><strong style="color:#f87171;">安全：漏水烫到小孩 / 配件弹飞</strong><br><span style="color:#94a3b8;font-size:12px;">绝对不可接受 — 1 例即导致"产品有毒"标签</span></div></li>
+        <li><span class="pain-num red">2</span> <div><strong style="color:#f87171;">安全：喷冷水/吐水（沸水喷到手）</strong></div></li>
+        <li><span class="pain-num red">3</span> <div><strong style="color:#f87171;">安全：手柄过热（长时间清洁烫手）</strong></div></li>
+        <li><span class="pain-num yellow">4</span> <div>好用：配件好装、不喷冷水</div></li>
+        <li><span class="pain-num yellow">5</span> <div>耐用："用 3 次就坏" → 直接 1 星</div></li>
+        <li><span class="pain-num green">6</span> <div>清洁效果"够日常用就行"不追求专业级</div></li>
+      </ul>
+      <div class="unacceptable">
+        <h4>&#9940; 她绝对不接受的</h4>
+        <p>漏水烫到手 &bull; 配件弹飞 &bull; 用 3 次就坏</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 3. PRODUCT SVG DIAGRAM ==================== -->
+<div class="section-title"><span class="num">3</span> 产品原理图 — 手持蒸汽清洁器（6 大改良标注）</div>
+<div class="svg-wrapper">
+<svg viewBox="0 0 920 440" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, PingFang SC, sans-serif">
+  <defs>
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6ee7b7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#34d399;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gripGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="nozzleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#94a3b8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#64748b;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="2" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="460" y="28" text-anchor="middle" fill="#6ee7b7" font-size="16" font-weight="700" letter-spacing="2">HANDHELD STEAM CLEANER — MVP v4 DESIGN</text>
+
+  <!-- ===== MAIN BODY (egg shape) ===== -->
+  <g filter="url(#shadow)">
+    <!-- Egg-shaped main body -->
+    <ellipse cx="420" cy="200" rx="140" ry="105" fill="url(#bodyGrad)" opacity="0.95"/>
+    <!-- Matte texture overlay -->
+    <ellipse cx="420" cy="200" rx="140" ry="105" fill="none" stroke="#34d399" stroke-width="1.5" stroke-dasharray="2,4" opacity="0.3"/>
+    <!-- Highlight -->
+    <ellipse cx="390" cy="165" rx="70" ry="40" fill="#fff" opacity="0.1"/>
+
+    <!-- Water Tank Window (transparent strip) -->
+    <rect x="365" y="160" width="40" height="70" rx="6" fill="#0f1219" opacity="0.55" stroke="#a7f3d0" stroke-width="1.5"/>
+    <rect x="370" y="168" width="30" height="20" rx="3" fill="#38bdf8" opacity="0.4"/>
+    <rect x="370" y="192" width="30" height="15" rx="3" fill="#38bdf8" opacity="0.25"/>
+    <text x="385" y="222" text-anchor="middle" fill="#a7f3d0" font-size="7" font-weight="600">MAX</text>
+    <text x="385" y="210" text-anchor="middle" fill="#a7f3d0" font-size="6">300ml</text>
+
+    <!-- Safety Cap (top) -->
+    <ellipse cx="420" cy="100" rx="42" ry="14" fill="#f1f5f9" stroke="#d1d5db" stroke-width="1"/>
+    <rect x="378" y="88" width="84" height="14" rx="7" fill="#f1f5f9" stroke="#d1d5db" stroke-width="1"/>
+    <!-- Cap grip lines -->
+    <line x1="395" y1="90" x2="395" y2="100" stroke="#cbd5e1" stroke-width="1"/>
+    <line x1="405" y1="90" x2="405" y2="100" stroke="#cbd5e1" stroke-width="1"/>
+    <line x1="415" y1="90" x2="415" y2="100" stroke="#cbd5e1" stroke-width="1"/>
+    <line x1="425" y1="90" x2="425" y2="100" stroke="#cbd5e1" stroke-width="1"/>
+    <line x1="435" y1="90" x2="435" y2="100" stroke="#cbd5e1" stroke-width="1"/>
+    <line x1="445" y1="90" x2="445" y2="100" stroke="#cbd5e1" stroke-width="1"/>
+
+    <!-- Gun-style Grip (below body, angled) -->
+    <path d="M380,280 L370,290 Q355,340 360,370 L370,380 Q380,388 400,388 L410,385 Q418,378 415,360 L420,310 L440,280" fill="url(#gripGrad)" stroke="#d1d5db" stroke-width="1.5"/>
+    <!-- Silicone grip texture (diamond pattern) -->
+    <path d="M385,310 L390,305 L395,310 L390,315 Z" fill="#cbd5e1" opacity="0.5"/>
+    <path d="M395,320 L400,315 L405,320 L400,325 Z" fill="#cbd5e1" opacity="0.5"/>
+    <path d="M388,330 L393,325 L398,330 L393,335 Z" fill="#cbd5e1" opacity="0.5"/>
+    <path d="M378,322 L383,317 L388,322 L383,327 Z" fill="#cbd5e1" opacity="0.5"/>
+    <path d="M392,340 L397,335 L402,340 L397,345 Z" fill="#cbd5e1" opacity="0.5"/>
+    <path d="M382,345 L387,340 L392,345 L387,350 Z" fill="#cbd5e1" opacity="0.5"/>
+    <path d="M396,352 L401,347 L406,352 L401,357 Z" fill="#cbd5e1" opacity="0.5"/>
+
+    <!-- Steam trigger button -->
+    <rect x="430" y="268" width="22" height="14" rx="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1"/>
+
+    <!-- Steam Lock Slider -->
+    <rect x="455" y="260" width="8" height="28" rx="4" fill="#6ee7b7" stroke="#34d399" stroke-width="1"/>
+
+    <!-- ===== NOZZLE ASSEMBLY ===== -->
+    <!-- Nozzle connector (where snap-lock is) -->
+    <rect x="555" y="185" width="40" height="30" rx="5" fill="#94a3b8" stroke="#64748b" stroke-width="1.5"/>
+    <!-- Snap-Lock orange button -->
+    <rect x="563" y="178" width="24" height="10" rx="5" fill="#f97316" stroke="#ea580c" stroke-width="1"/>
+    <!-- Connection bridge from body to nozzle -->
+    <rect x="530" y="190" width="30" height="20" rx="4" fill="#6ee7b7" stroke="#34d399" stroke-width="1"/>
+
+    <!-- Nozzle tube -->
+    <rect x="590" y="190" width="90" height="20" rx="3" fill="url(#nozzleGrad)" stroke="#475569" stroke-width="1"/>
+    <!-- Nozzle tip -->
+    <polygon points="680,192 705,195 705,205 680,208" fill="#64748b" stroke="#475569" stroke-width="1"/>
+    <!-- Steam spray lines -->
+    <line x1="708" y1="196" x2="740" y2="188" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+    <line x1="708" y1="200" x2="748" y2="200" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+    <line x1="708" y1="204" x2="740" y2="212" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>
+    <text x="755" y="203" fill="#6ee7b7" font-size="11" font-weight="600" opacity="0.7">STEAM</text>
+
+    <!-- LED Light Ring (front of body) -->
+    <ellipse cx="530" cy="200" rx="10" ry="26" fill="none" stroke="#6ee7b7" stroke-width="3" filter="url(#glow)" opacity="0.9"/>
+    <ellipse cx="530" cy="200" rx="7" ry="20" fill="#6ee7b7" opacity="0.15"/>
+  </g>
+
+  <!-- ===== INTERNAL: Gas-Liquid Separator (shown as cutaway) ===== -->
+  <g opacity="0.7">
+    <rect x="480" y="190" width="36" height="20" rx="2" fill="none" stroke="#a7f3d0" stroke-width="1" stroke-dasharray="3,2"/>
+    <line x1="486" y1="192" x2="486" y2="208" stroke="#a7f3d0" stroke-width="1" stroke-dasharray="1,2"/>
+    <line x1="496" y1="192" x2="496" y2="208" stroke="#a7f3d0" stroke-width="1" stroke-dasharray="1,2"/>
+    <line x1="506" y1="192" x2="506" y2="208" stroke="#a7f3d0" stroke-width="1" stroke-dasharray="1,2"/>
+  </g>
+
+  <!-- ===== ANNOTATION CALLOUTS ===== -->
+
+  <!-- 1. LED Light -->
+  <line x1="530" y1="170" x2="530" y2="72" stroke="#6ee7b7" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="530" y1="72" x2="600" y2="72" stroke="#6ee7b7" stroke-width="1"/>
+  <circle cx="530" cy="170" r="3" fill="#6ee7b7"/>
+  <rect x="602" y="56" width="170" height="34" rx="8" fill="rgba(110,231,183,0.1)" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="612" y="72" fill="#6ee7b7" font-size="11" font-weight="700">&#9733;1 LED 三色就绪灯</text>
+  <text x="612" y="84" fill="#94a3b8" font-size="9">蓝=加热 / 绿=就绪 / 红=缺水</text>
+
+  <!-- 2. Snap-Lock -->
+  <line x1="575" y1="178" x2="575" y2="120" stroke="#f97316" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="575" y1="120" x2="680" y2="120" stroke="#f97316" stroke-width="1"/>
+  <circle cx="575" cy="178" r="3" fill="#f97316"/>
+  <rect x="682" y="104" width="200" height="34" rx="8" fill="rgba(249,115,22,0.1)" stroke="#f97316" stroke-width="1"/>
+  <text x="692" y="120" fill="#f97316" font-size="11" font-weight="700">&#9733;3 Snap-Lock 橙色配件按钮</text>
+  <text x="692" y="132" fill="#94a3b8" font-size="9">POM 卡爪 &#8805;50N, 防弹飞</text>
+
+  <!-- 3. Water Tank Window -->
+  <line x1="365" y1="195" x2="200" y2="195" stroke="#38bdf8" stroke-width="1" stroke-dasharray="3,2"/>
+  <circle cx="365" cy="195" r="3" fill="#38bdf8"/>
+  <rect x="30" y="180" width="168" height="34" rx="8" fill="rgba(56,189,248,0.1)" stroke="#38bdf8" stroke-width="1"/>
+  <text x="40" y="196" fill="#38bdf8" font-size="11" font-weight="700">&#9733;5 透明水箱窗+刻度</text>
+  <text x="40" y="208" fill="#94a3b8" font-size="9">PC 窗 40x15mm, MAX 300ml</text>
+
+  <!-- 4. Silicone Grip -->
+  <line x1="370" y1="340" x2="200" y2="340" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="3,2"/>
+  <circle cx="370" cy="340" r="3" fill="#e2e8f0"/>
+  <rect x="30" y="324" width="168" height="34" rx="8" fill="rgba(226,232,240,0.1)" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="40" y="340" fill="#e2e8f0" font-size="11" font-weight="700">&#9733;6 白色硅胶握柄</text>
+  <text x="40" y="352" fill="#94a3b8" font-size="9">2-3mm 硅胶+菱形防滑纹, 隔热</text>
+
+  <!-- 5. Gas-Liquid Separator -->
+  <line x1="498" y1="210" x2="498" y2="310" stroke="#a7f3d0" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="498" y1="310" x2="560" y2="310" stroke="#a7f3d0" stroke-width="1"/>
+  <circle cx="498" cy="210" r="3" fill="#a7f3d0"/>
+  <rect x="562" y="294" width="210" height="34" rx="8" fill="rgba(167,243,208,0.1)" stroke="#a7f3d0" stroke-width="1"/>
+  <text x="572" y="310" fill="#a7f3d0" font-size="11" font-weight="700">&#9733;7 气液分离挡板 (Anti-Spit)</text>
+  <text x="572" y="322" fill="#94a3b8" font-size="9">3 层不锈钢多孔挡板, 仅干蒸汽通过</text>
+
+  <!-- 6. Steam Lock -->
+  <line x1="459" y1="260" x2="459" y2="245" stroke="#6ee7b7" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="459" y1="245" x2="200" y2="245" stroke="#6ee7b7" stroke-width="1"/>
+  <circle cx="459" cy="260" r="3" fill="#6ee7b7"/>
+  <rect x="30" y="230" width="168" height="34" rx="8" fill="rgba(110,231,183,0.1)" stroke="#6ee7b7" stroke-width="1"/>
+  <text x="40" y="246" fill="#6ee7b7" font-size="11" font-weight="700">&#9733;4 蒸汽锁定按钮</text>
+  <text x="40" y="258" fill="#94a3b8" font-size="9">滑动锁定, 单手操作</text>
+
+  <!-- Color callout -->
+  <rect x="30" y="395" width="260" height="30" rx="8" fill="rgba(110,231,183,0.08)" stroke="rgba(110,231,183,0.3)" stroke-width="1"/>
+  <text x="42" y="415" fill="#6ee7b7" font-size="12" font-weight="600">&#9733;2 薄荷绿 Pantone 337C + 哑光质感</text>
+
+  <!-- Power spec -->
+  <text x="420" y="430" text-anchor="middle" fill="#475569" font-size="11">1050W | 115&#176;C / 2-3bar | 350ml 水箱 | 9.4ft 电源线 | &#8804;1.2kg</text>
+</svg>
+</div>
+
+<!-- ==================== 4. USER IMPACT RANKING ==================== -->
+<div class="section-title"><span class="num">4</span> 用户影响力排序（MVP 精简版入选 7 项 + 被砍暗色）</div>
+<div class="table-wrapper">
+<table>
+  <thead>
+    <tr>
+      <th style="width:50px;">排名</th>
+      <th>项目</th>
+      <th style="width:80px;">分类</th>
+      <th style="width:80px;">可感知 40%</th>
+      <th style="width:80px;">决策力 25%</th>
+      <th style="width:80px;">体验力 20%</th>
+      <th style="width:85px;">成本效率 15%</th>
+      <th style="width:70px;">总分</th>
+      <th style="width:80px;">成本</th>
+      <th style="width:60px;">入选</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="row-highlight">
+      <td><span class="star">&#9733;</span> 1</td>
+      <td><strong>LED 三色就绪灯</strong></td>
+      <td><span class="tag-attack">进攻</span></td>
+      <td>5</td><td>4</td><td>4</td><td>4</td>
+      <td><strong style="color:#6ee7b7;">4.40</strong></td>
+      <td>+&#165;2-3</td>
+      <td class="check">&#10003; MVP</td>
+    </tr>
+    <tr class="row-highlight">
+      <td><span class="star">&#9733;</span> 2</td>
+      <td><strong>薄荷绿配色</strong></td>
+      <td><span class="tag-attack">进攻</span></td>
+      <td>5</td><td>4</td><td>2</td><td>4</td>
+      <td><strong style="color:#6ee7b7;">4.00</strong></td>
+      <td>+&#165;1-2</td>
+      <td class="check">&#10003; MVP</td>
+    </tr>
+    <tr class="row-highlight">
+      <td><span class="star">&#9733;</span> 3</td>
+      <td><strong>Snap-Lock 配件（橙色按钮）</strong></td>
+      <td><span class="tag-defend">防守</span></td>
+      <td>4</td><td>4</td><td>5</td><td>3</td>
+      <td><strong style="color:#6ee7b7;">4.05</strong></td>
+      <td>+&#165;3-5</td>
+      <td class="check">&#10003; MVP</td>
+    </tr>
+    <tr class="row-highlight">
+      <td><span class="star">&#9733;</span> 4</td>
+      <td><strong>蒸汽锁定按钮</strong></td>
+      <td><span class="tag-attack">进攻</span></td>
+      <td>4</td><td>3</td><td>5</td><td>4</td>
+      <td><strong style="color:#6ee7b7;">3.95</strong></td>
+      <td>+&#165;1-2</td>
+      <td class="check">&#10003; MVP</td>
+    </tr>
+    <tr class="row-highlight">
+      <td><span class="star">&#9733;</span> 5</td>
+      <td><strong>透明水箱窗 + 水位刻度</strong></td>
+      <td><span class="tag-attack">进攻</span></td>
+      <td>5</td><td>3</td><td>4</td><td>3</td>
+      <td><strong style="color:#6ee7b7;">3.95</strong></td>
+      <td>+&#165;2-3</td>
+      <td class="check">&#10003; MVP</td>
+    </tr>
+    <tr class="row-highlight">
+      <td><span class="star">&#9733;</span> 6</td>
+      <td><strong>硅胶握柄（白色撞色）</strong> <span style="font-size:10px;color:#eab308;border:1px solid #eab308;padding:1px 6px;border-radius:6px;margin-left:4px;">v4 升级</span></td>
+      <td><span class="tag-defend">防守</span></td>
+      <td>5</td><td>3</td><td>4</td><td>3</td>
+      <td><strong style="color:#6ee7b7;">3.95</strong></td>
+      <td>+&#165;3-5</td>
+      <td class="check">&#10003; MVP</td>
+    </tr>
+    <tr class="row-highlight">
+      <td><span class="star">&#9733;</span> 7</td>
+      <td><strong>气液分离挡板</strong></td>
+      <td><span class="tag-hidden">隐形</span></td>
+      <td>1</td><td>2</td><td>5</td><td>3</td>
+      <td><strong style="color:#94a3b8;">2.50</strong></td>
+      <td>+&#165;3-5</td>
+      <td class="check">&#10003; MVP</td>
+    </tr>
+    <!-- CUT items -->
+    <tr class="row-cut">
+      <td>8</td>
+      <td>15件配件+收纳袋</td>
+      <td><span class="tag-attack">进攻</span></td>
+      <td>4</td><td>4</td><td>3</td><td>3</td>
+      <td>3.65</td>
+      <td>+&#165;3-5</td>
+      <td class="cross">V1.5</td>
+    </tr>
+    <tr class="row-cut">
+      <td>9</td>
+      <td>旋锁安全盖</td>
+      <td><span class="tag-defend">防守</span></td>
+      <td>3</td><td>3</td><td>5</td><td>3</td>
+      <td>3.45</td>
+      <td>+&#165;3-5</td>
+      <td class="cross">V1.5</td>
+    </tr>
+    <tr class="row-cut">
+      <td>10</td>
+      <td>加长电源线 12ft</td>
+      <td><span class="tag-defend">防守</span></td>
+      <td>3</td><td>2</td><td>3</td><td>3</td>
+      <td>2.75</td>
+      <td>+&#165;2-3</td>
+      <td class="cross">V1.5</td>
+    </tr>
+    <tr class="row-cut">
+      <td>14</td>
+      <td>EPDM 密封圈</td>
+      <td><span class="tag-hidden">隐形</span></td>
+      <td>1</td><td>1</td><td>5</td><td>4</td>
+      <td>2.40</td>
+      <td>+&#165;1.5-3</td>
+      <td class="cross">V2</td>
+    </tr>
+    <tr class="row-cut">
+      <td>16</td>
+      <td>PP+30%GF 壳体</td>
+      <td><span class="tag-hidden">隐形</span></td>
+      <td>1</td><td>1</td><td>4</td><td>3</td>
+      <td>2.05</td>
+      <td>+&#165;2-4</td>
+      <td class="cross">V2</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ==================== 5. SPEC COMPARISON ==================== -->
+<div class="section-title"><span class="num">5</span> 规格对比 — 我们 vs CURMEDI（8 项绿红对比）</div>
+<div class="table-wrapper">
+<table>
+  <thead>
+    <tr>
+      <th style="width:160px;">维度</th>
+      <th style="background:rgba(110,231,183,0.12);color:#6ee7b7;text-align:center;">&#127775; 我们 MVP</th>
+      <th style="background:rgba(239,68,68,0.08);color:#f87171;text-align:center;">CURMEDI B0DGQ7L856</th>
+      <th style="width:120px;">差异</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>配色</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>&#127811; 薄荷绿 + 白 + 橙点缀</strong></td>
+      <td style="color:#f87171;text-align:center;">Deep Gray</td>
+      <td><span class="check">&#9650; Sarah 审美</span></td>
+    </tr>
+    <tr>
+      <td>LED 指示灯</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>&#10003; 三色就绪灯</strong></td>
+      <td style="color:#f87171;text-align:center;">&#10007; 无</td>
+      <td><span class="check">&#9650; 创新 #1</span></td>
+    </tr>
+    <tr>
+      <td>配件连接</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>Snap-Lock &#8805;50N 橙按钮</strong></td>
+      <td style="color:#f87171;text-align:center;">Push-fit &lt;15N</td>
+      <td><span class="check">&#9650; 安全 #1</span></td>
+    </tr>
+    <tr>
+      <td>蒸汽触发</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>锁定按钮 + 触发</strong></td>
+      <td style="color:#f87171;text-align:center;">持续按压</td>
+      <td><span class="check">&#9650; 便利</span></td>
+    </tr>
+    <tr>
+      <td>水箱</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>350ml + 透明窗 + 刻度</strong></td>
+      <td style="color:#f87171;text-align:center;">350ml 不透明</td>
+      <td><span class="check">&#9650; 直观</span></td>
+    </tr>
+    <tr>
+      <td>握柄</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>白色硅胶 + 菱形防滑 + 隔热</strong></td>
+      <td style="color:#f87171;text-align:center;">硬塑料</td>
+      <td><span class="check">&#9650; 安全+外观</span></td>
+    </tr>
+    <tr>
+      <td>气液分离</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>&#10003; 3 层不锈钢挡板</strong></td>
+      <td style="color:#f87171;text-align:center;">&#10007; 无</td>
+      <td><span class="check">&#9650; Anti-Spit</span></td>
+    </tr>
+    <tr>
+      <td>表面质感</td>
+      <td style="color:#6ee7b7;text-align:center;"><strong>哑光微纹理</strong></td>
+      <td style="color:#f87171;text-align:center;">亮面光滑</td>
+      <td><span class="check">&#9650; 质感</span></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ==================== 6. COST WATERFALL ==================== -->
+<div class="section-title"><span class="num">6</span> 成本瀑布图（精简版 7 项改良 +&#165;19 中位）</div>
+<div class="waterfall-chart">
+  <div class="wf-bars">
+    <!-- Each bar: height proportional to value. Max $34.33 total => scale factor ~6.4px/$ -->
+    <div class="wf-bar-group">
+      <div class="wf-bar cost" style="height:90px;">
+        <span class="wf-bar-val">$14.03</span>
+      </div>
+      <div class="wf-bar-label">采购<br><span style="font-size:9px;color:#64748b;">&#165;82+&#165;19改良</span></div>
+    </div>
+    <div class="wf-bar-group">
+      <div class="wf-bar cost" style="height:37px;">
+        <span class="wf-bar-val">$5.80</span>
+      </div>
+      <div class="wf-bar-label">FBA 配送</div>
+    </div>
+    <div class="wf-bar-group">
+      <div class="wf-bar cost" style="height:38px;">
+        <span class="wf-bar-val">$6.00</span>
+      </div>
+      <div class="wf-bar-label">佣金 15%</div>
+    </div>
+    <div class="wf-bar-group">
+      <div class="wf-bar cost" style="height:26px;">
+        <span class="wf-bar-val">$4.00</span>
+      </div>
+      <div class="wf-bar-label">广告分摊</div>
+    </div>
+    <div class="wf-bar-group">
+      <div class="wf-bar cost" style="height:16px;">
+        <span class="wf-bar-val">$2.50</span>
+      </div>
+      <div class="wf-bar-label">头程物流</div>
+    </div>
+    <div class="wf-bar-group">
+      <div class="wf-bar cost" style="height:13px;">
+        <span class="wf-bar-val">$2.00</span>
+      </div>
+      <div class="wf-bar-label">仓储+其他</div>
+    </div>
+    <!-- Separator -->
+    <div style="width:2px;background:rgba(255,255,255,0.1);height:180px;align-self:flex-end;border-radius:1px;margin:0 8px;"></div>
+    <!-- Total Cost -->
+    <div class="wf-bar-group">
+      <div class="wf-bar total" style="height:180px;">
+        <span class="wf-bar-val">$34.33</span>
+      </div>
+      <div class="wf-bar-label"><strong style="color:#f87171;">总成本</strong></div>
+    </div>
+    <!-- Separator -->
+    <div style="width:2px;background:rgba(255,255,255,0.1);height:220px;align-self:flex-end;border-radius:1px;margin:0 8px;"></div>
+    <!-- Sell Price -->
+    <div class="wf-bar-group">
+      <div class="wf-bar price" style="height:220px;">
+        <span class="wf-bar-val">$42.99</span>
+      </div>
+      <div class="wf-bar-label"><strong style="color:#6ee7b7;">基准售价</strong></div>
+    </div>
+    <!-- Profit -->
+    <div class="wf-bar-group">
+      <div class="wf-bar profit" style="height:56px;">
+        <span class="wf-bar-val">$8.66</span>
+      </div>
+      <div class="wf-bar-label"><strong style="color:#fcd34d;">毛利 20.1%</strong></div>
+    </div>
+  </div>
+  <div class="wf-legend">
+    <div class="wf-legend-item"><div class="wf-legend-dot" style="background:#3b82f6;"></div> 成本项</div>
+    <div class="wf-legend-item"><div class="wf-legend-dot" style="background:#ef4444;"></div> 总成本 $34.33</div>
+    <div class="wf-legend-item"><div class="wf-legend-dot" style="background:#34d399;"></div> 基准售价 $42.99</div>
+    <div class="wf-legend-item"><div class="wf-legend-dot" style="background:#f59e0b;"></div> 毛利 $8.66 (20.1%)</div>
+  </div>
+  <!-- Price scenarios -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;">
+    <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:12px;color:#94a3b8;">低价入场</div>
+      <div style="font-size:22px;font-weight:700;color:#94a3b8;">$39.99</div>
+      <div style="font-size:13px;color:#94a3b8;">毛利 $5.66 <span style="color:#64748b;">(14.2%)</span></div>
+    </div>
+    <div style="background:rgba(110,231,183,0.06);border:1px solid rgba(110,231,183,0.2);border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:12px;color:#6ee7b7;">&#9733; 基准价</div>
+      <div style="font-size:22px;font-weight:700;color:#6ee7b7;">$42.99</div>
+      <div style="font-size:13px;color:#6ee7b7;">毛利 $8.66 <span style="color:#34d399;">(20.1%)</span></div>
+    </div>
+    <div style="background:rgba(0,0,0,0.2);border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:12px;color:#94a3b8;">目标价</div>
+      <div style="font-size:22px;font-weight:700;color:#94a3b8;">$44.99</div>
+      <div style="font-size:13px;color:#94a3b8;">毛利 $10.66 <span style="color:#64748b;">(23.7%)</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 7. TEST STANDARDS ==================== -->
+<div class="section-title"><span class="num">7</span> 测试标准 Pass/Fail（含 v4 新增"安全类差评占比"）</div>
+<div class="test-grid">
+  <div class="test-card">
+    <div class="metric">&#128200; 日均单量</div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">&#8805;10</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&lt;5</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">&#8805;15</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">&#8805;20</div></div>
+    </div>
+  </div>
+  <div class="test-card">
+    <div class="metric">&#127942; BSR (Steamers)</div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">Top 20</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&gt;Top 50</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">Top 10</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">Top 7</div></div>
+    </div>
+  </div>
+  <div class="test-card">
+    <div class="metric">&#128184; 转化率</div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">&#8805;10%</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&lt;6%</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">&#8805;12%</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">&#8805;14%</div></div>
+    </div>
+  </div>
+  <div class="test-card">
+    <div class="metric">&#11088; 星级</div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">&#8805;4.0</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&lt;3.5</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">&#8805;4.2</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">&#8805;4.3</div></div>
+    </div>
+  </div>
+  <div class="test-card">
+    <div class="metric">&#128230; 退货率</div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">&#8804;10%</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&gt;15%</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">&#8804;8%</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">&#8804;6%</div></div>
+    </div>
+  </div>
+  <div class="test-card">
+    <div class="metric">&#128176; ACOS</div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">&#8804;35%</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&gt;50%</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">&#8804;30%</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">&#8804;25%</div></div>
+    </div>
+  </div>
+  <div class="test-card">
+    <div class="metric">&#128167; 喷水差评占比</div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">&#8804;5%</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&gt;10%</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">&#8804;3%</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">&#8804;2%</div></div>
+    </div>
+  </div>
+  <div class="test-card highlight-card">
+    <div class="metric">&#9888;&#65039; 安全类差评占比 <span style="background:#eab308;color:#0f1219;padding:1px 8px;border-radius:8px;font-size:10px;font-weight:700;margin-left:4px;">v4 NEW</span></div>
+    <div class="values">
+      <div class="test-val pass"><div class="period">30天 Pass</div><div class="num">&#8804;3%</div></div>
+      <div class="test-val fail"><div class="period">30天 Fail</div><div class="num">&gt;8%</div></div>
+      <div class="test-val pass"><div class="period">60天</div><div class="num">&#8804;2%</div></div>
+      <div class="test-val pass"><div class="period">90天</div><div class="num">&#8804;1%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 8. SUPPLIER SCRIPT ==================== -->
+<div class="section-title"><span class="num">8</span> 供应商话术对照表</div>
+<div class="table-wrapper">
+<table>
+  <thead>
+    <tr>
+      <th style="width:60px;">优先级</th>
+      <th>项目</th>
+      <th>精确要求</th>
+      <th>Sarah 理由</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span style="color:#eab308;font-size:18px;">&#9733;</span> 1</td>
+      <td><strong>Snap-Lock 配件</strong></td>
+      <td>POM 卡爪, &#8805;50N, 橙色释放按钮</td>
+      <td style="color:#f87171;">安全 #1</td>
+    </tr>
+    <tr>
+      <td><span style="color:#eab308;font-size:18px;">&#9733;</span> 2</td>
+      <td><strong>气液分离</strong></td>
+      <td>蒸汽出口 3 层不锈钢多孔挡板 1-2mm</td>
+      <td style="color:#f87171;">安全 #2</td>
+    </tr>
+    <tr>
+      <td><span style="color:#eab308;font-size:18px;">&#9733;</span> 3</td>
+      <td><strong>LED 就绪灯</strong></td>
+      <td>三色LED 蓝/绿/红, 呼吸模式</td>
+      <td style="color:#6ee7b7;">主图吸引力</td>
+    </tr>
+    <tr>
+      <td><span style="color:#eab308;font-size:18px;">&#9733;</span> 4</td>
+      <td><strong>薄荷绿配色</strong></td>
+      <td>Pantone 337C, 哑光 VDI 27-30</td>
+      <td style="color:#6ee7b7;">搜索页跳出</td>
+    </tr>
+    <tr>
+      <td><span style="color:#eab308;font-size:18px;">&#9733;</span> 5</td>
+      <td><strong>硅胶握柄</strong></td>
+      <td>白色硅胶 2-3mm + 菱形防滑</td>
+      <td style="color:#6ee7b7;">安全+外观</td>
+    </tr>
+    <tr>
+      <td><span style="color:#eab308;font-size:18px;">&#9733;</span> 6</td>
+      <td><strong>透明水箱窗</strong></td>
+      <td>PC 窗 40&#215;15mm, MAX 300ml 刻蚀</td>
+      <td>直观</td>
+    </tr>
+    <tr>
+      <td><span style="color:#eab308;font-size:18px;">&#9733;</span> 7</td>
+      <td><strong>蒸汽锁定</strong></td>
+      <td>触发阀滑动锁定, 推到位卡住</td>
+      <td>单手操作</td>
+    </tr>
+  </tbody>
+</table>
+<!-- Supplier first message -->
+<div style="padding:20px 24px;border-top:1px solid rgba(110,231,183,0.1);background:rgba(0,0,0,0.15);">
+  <div style="font-size:13px;color:#6ee7b7;font-weight:700;margin-bottom:10px;">&#128172; 供应商首封沟通话术模板</div>
+  <div style="background:rgba(0,0,0,0.25);border-radius:10px;padding:16px 20px;font-size:13px;color:#cbd5e1;line-height:1.8;border-left:3px solid #6ee7b7;">
+    "你好，我们要开发一款手持蒸汽清洁器，面向美国市场 25-40 岁的家庭女性用户。几个关键需求想确认你们能否做：<br>
+    <strong style="color:#6ee7b7;">1.</strong> LED 三色指示灯（蓝加热/绿就绪/红缺水）— 有现成方案吗？<br>
+    <strong style="color:#6ee7b7;">2.</strong> 薄荷绿配色 Pantone 337C + 哑光纹理 — 能打样确认色差吗？<br>
+    <strong style="color:#6ee7b7;">3.</strong> 配件接口从 push-fit 改 snap-lock 卡扣 + 橙色释放按钮 — 做过类似的吗？<br>
+    <strong style="color:#6ee7b7;">4.</strong> 蒸汽出口加三层不锈钢多孔挡板做气液分离 — 你们的加热腔结构能加吗？<br>
+    <strong style="color:#6ee7b7;">5.</strong> 白色硅胶握柄双色注塑 — 你们有双色注塑能力吗？<br><br>
+    请报价和打样周期。参考竞品 Amazon CURMEDI（ASIN: B0DGQ7L856），首批 500 件。"
+  </div>
+</div>
+</div>
+
+<!-- ==================== 9. v1→v4 EVOLUTION ==================== -->
+<div class="section-title"><span class="num">9</span> v1 &#8594; v4 演进对比</div>
+<div class="table-wrapper">
+<table class="evo-table">
+  <thead>
+    <tr>
+      <th style="width:140px;">维度</th>
+      <th>v1</th>
+      <th>v2</th>
+      <th>v3</th>
+      <th style="background:rgba(110,231,183,0.15);">&#9733; v4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">用户画像</td>
+      <td>无</td>
+      <td>无</td>
+      <td>无</td>
+      <td class="col-v4"><strong>Sarah: 28-42岁妈妈, 冲动购买, 安全第一</strong></td>
+    </tr>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">排序逻辑</td>
+      <td>根因严重性</td>
+      <td>根因严重性</td>
+      <td>4维度加权(统一权重)</td>
+      <td class="col-v4"><strong>4维度(Sarah权重: 可感知40%)</strong></td>
+    </tr>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">第一卖点</td>
+      <td>防漏水</td>
+      <td>防漏水</td>
+      <td>LED就绪灯</td>
+      <td class="col-v4"><strong>SAFE for your family</strong></td>
+    </tr>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">配件弹飞排名</td>
+      <td>#3 (按根因)</td>
+      <td>#3</td>
+      <td>#3 (按总分)</td>
+      <td class="col-v4"><strong>#1 (Sarah安全优先)</strong></td>
+    </tr>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">硅胶握柄</td>
+      <td>Nice-to-have</td>
+      <td>P1</td>
+      <td>标准版</td>
+      <td class="col-v4"><strong>精简版必做</strong></td>
+    </tr>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">Listing 语气</td>
+      <td>功能描述</td>
+      <td>工程描述</td>
+      <td>创新驱动</td>
+      <td class="col-v4"><strong>"Safe for your family" 亲切安心</strong></td>
+    </tr>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">五点第一句</td>
+      <td>"Leak-proof"</td>
+      <td>"Leak-proof"</td>
+      <td>"Smart LED"</td>
+      <td class="col-v4"><strong>"Safe around your family"</strong></td>
+    </tr>
+    <tr>
+      <td style="color:#94a3b8;font-weight:600;">供应商第一问</td>
+      <td>"换EPDM"</td>
+      <td>"换EPDM"</td>
+      <td>"LED能做吗?"</td>
+      <td class="col-v4"><strong>"面向25-40岁家庭女性..."</strong></td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ==================== 10. TIMELINE ==================== -->
+<div class="section-title"><span class="num">10</span> 上市时间线</div>
+<div class="timeline">
+  <!-- Week 1-2 -->
+  <div class="tl-item">
+    <div class="tl-content">
+      <div class="tl-week">Week 1-2</div>
+      <div class="tl-title">供应商询价 &amp; 打样确认</div>
+      <div class="tl-desc">联系 3-5 家供应商发送需求表，确认 7 项改良可行性。要求寄样品 &amp; Pantone 337C 色板。</div>
+    </div>
+    <div class="tl-spacer"></div>
+    <div class="tl-dot"></div>
+  </div>
+  <!-- Week 3-4 -->
+  <div class="tl-item">
+    <div class="tl-content">
+      <div class="tl-week">Week 3-4</div>
+      <div class="tl-title">样品评审 &amp; 工业设计确认</div>
+      <div class="tl-desc">测试 Snap-Lock &#8805;50N、气液分离效果、LED 灯效。确认薄荷绿色差 &#916;E&lt;2。</div>
+    </div>
+    <div class="tl-spacer"></div>
+    <div class="tl-dot"></div>
+  </div>
+  <!-- Week 5-6 -->
+  <div class="tl-item">
+    <div class="tl-content">
+      <div class="tl-week">Week 5-6</div>
+      <div class="tl-title">开模 &amp; 首批生产 500件</div>
+      <div class="tl-desc">Snap-Lock 卡扣模具、硅胶握柄双色注塑模具。首批 500 件生产 + QC。</div>
+    </div>
+    <div class="tl-spacer"></div>
+    <div class="tl-dot"></div>
+  </div>
+  <!-- Week 7-8 -->
+  <div class="tl-item">
+    <div class="tl-content">
+      <div class="tl-week">Week 7-8</div>
+      <div class="tl-title">UL/ETL 认证 &amp; 头程物流</div>
+      <div class="tl-desc">送检安规认证，同步海运/空运头程发 FBA 仓库。</div>
+    </div>
+    <div class="tl-spacer"></div>
+    <div class="tl-dot"></div>
+  </div>
+  <!-- Week 9-10 -->
+  <div class="tl-item">
+    <div class="tl-content">
+      <div class="tl-week">Week 9-10</div>
+      <div class="tl-title">Listing 上架 &amp; 广告启动</div>
+      <div class="tl-desc">上传主图 7 张 + A+ 页面。$34.99 + 20% Coupon 低价入场。Vine 邀评 30 个。</div>
+    </div>
+    <div class="tl-spacer"></div>
+    <div class="tl-dot"></div>
+  </div>
+  <!-- Week 11-14 -->
+  <div class="tl-item">
+    <div class="tl-content">
+      <div class="tl-week">Week 11-14</div>
+      <div class="tl-title">30天数据验证</div>
+      <div class="tl-desc">Pass/Fail 评估：日均&#8805;10单、BSR Top 20、星级&#8805;4.0、安全差评&#8804;3%。根据结果决定是否追加。</div>
+    </div>
+    <div class="tl-spacer"></div>
+    <div class="tl-dot"></div>
+  </div>
+  <!-- Month 3-6 -->
+  <div class="tl-item">
+    <div class="tl-content">
+      <div class="tl-week">Month 3-6</div>
+      <div class="tl-title">爬坡 &amp; 回本</div>
+      <div class="tl-desc">提价至 $42.99，追加库存，启动 V1.5 标准版（旋锁安全盖+15件配件+12ft线）。目标 6 个月回本。</div>
+    </div>
+    <div class="tl-spacer"></div>
+    <div class="tl-dot"></div>
+  </div>
+</div>
+
+</div><!-- /.container -->
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  Handheld Steam Cleaner MVP v4 可视化看板 &middot; 2026-03-21 &middot; lean-product-develop-mvp-blueprint v4 (14步)<br>
+  数据来源: Sorftime MCP + 差评画像分析 &middot; 目标市场: Amazon US &middot; 首批投入 $24,015 / 500件
+</div>
+
+</body>
+</html>

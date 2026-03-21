@@ -1,0 +1,9 @@
+{
+  "api_mode": "gemini",
+  "model": "nanobanana-2",
+  "resolution": "2K",
+  "total": 1,
+  "success": 1,
+  "failed": 0,
+  "output_dir": "images"
+}

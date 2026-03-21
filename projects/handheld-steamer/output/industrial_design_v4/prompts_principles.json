@@ -1,0 +1,86 @@
+[
+  {
+    "label": "design_A_45deg",
+    "group": "concept_A",
+    "prompt": "A handheld garment steamer with refined minimalist design. The form follows the classic recognizable garment steamer silhouette — upright body with angled steam head on top, handle on the side, water tank at the base. No radical shape changes, instantly recognizable as a garment steamer. Simple geometric volumes: cylindrical body, gently angled neck, flat oval steam plate. One single signature detail: a thin ambient LED light ring where the steam head meets the body neck, glowing soft warm white. Matte white body with champagne gold aluminum steam plate rim and LED ring as the only accent. Soft-touch matte finish. The handle angle follows natural wrist position — slightly angled forward 15 degrees so the user's wrist stays neutral when steaming vertically hung garments. Ergonomic grip diameter 38mm, the natural comfortable holding size. Clean, understated, but that gold ring makes it instantly memorable. Less is more. Three-quarter hero shot, 45-degree angle. Pure white studio background. Professional product photography, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_A_front",
+    "group": "concept_A",
+    "prompt": "A handheld garment steamer, minimalist design. Classic upright garment steamer form that any consumer instantly recognizes. Cylindrical body, angled steam head, side handle. Matte white body, one signature detail: a thin champagne gold LED light ring at the steam head junction. The handle is angled 15 degrees forward matching natural wrist ergonomics for vertical steaming. Simple basic geometric shapes, no unusual curves or complex surfaces. Memorable through one accent detail, not through complexity. Straight-on front view, eye level. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_A_side",
+    "group": "concept_A",
+    "prompt": "A handheld garment steamer, minimalist design, side profile view. Classic recognizable garment steamer silhouette. Cylindrical body, gently angled neck leading to flat oval steam plate. The side view clearly shows the ergonomic handle angle — tilted 15 degrees forward so the wrist stays in neutral position when steaming hanging clothes. Matte white body with only a thin champagne gold ring at the head junction as the signature detail. Clean geometric volumes, no unnecessary sculpting. Side profile view, 90-degree angle, clean silhouette. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_A_in_use",
+    "group": "concept_A",
+    "prompt": "A woman using a white minimalist handheld garment steamer with a thin gold ring accent to steam a shirt hanging on a door hook. Her wrist is in a comfortable neutral position — not bent or twisted — the handle angle naturally aligns with the vertical steaming motion. The steamer is clearly a garment steamer in classic form. Bright modern bedroom, morning light. The gold ring detail catches the light subtly. Lifestyle photography, warm natural lighting, editorial quality, 8K, photorealistic.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_B_45deg",
+    "group": "concept_B",
+    "prompt": "A handheld garment steamer with refined minimalist design. Classic recognizable garment steamer form — upright cylindrical body, angled steam head, integrated handle. No radical redesign, consumers see it and immediately know it is a garment steamer. Basic geometric shapes: soft cylinder body, slight taper toward the top. One signature detail: a transparent water level window strip running vertically along the front of the body, backlit with soft blue LED light when heating, turning green when ready. This glowing strip is the only decorative element and also functional. Matte soft mint green body with white steam plate. The handle curves gently following the natural grip of a relaxed hand, no finger contortions needed. The steam head angle matches the natural forward reach when steaming hanging fabric. Understated but the glowing strip makes it unforgettable on a shelf. Three-quarter hero shot, 45-degree angle. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_B_front",
+    "group": "concept_B",
+    "prompt": "A handheld garment steamer, minimalist design. Classic upright garment steamer shape that consumers instantly recognize. Matte mint green body with one signature feature: a vertical transparent water level window strip on the front, backlit with soft green LED glow indicating ready status. White steam plate on top. Simple cylinder-based geometry, no complex sculpted surfaces. The handle follows natural hand ergonomics. Straight-on front view, eye level. The glowing green strip is the focal point. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_B_side",
+    "group": "concept_B",
+    "prompt": "A handheld garment steamer, minimalist mint green design, side profile. Classic garment steamer silhouette. The side view shows the ergonomic handle angle designed for comfortable vertical steaming without wrist strain. The body is a simple tapered cylinder. The transparent LED water window strip is visible as a thin glowing line along the edge. White steam plate on the angled head. No unnecessary details. Side profile view, clean silhouette. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_C_45deg",
+    "group": "concept_C",
+    "prompt": "A handheld garment steamer with refined minimalist design. The classic recognizable garment steamer form — upright body, angled steam head, side handle, base that stands upright on a table. Simple geometric volumes throughout: rounded rectangle body cross-section, clean transitions. One signature detail: a textured band around the middle of the body in contrasting warm gray woven fabric (like Kvadrat textile), everything else is smooth matte white. This fabric band is also the grip zone, providing tactile warmth and anti-slip. The steam plate is brushed stainless steel, flat and simple. The handle angle naturally fits the wrist for vertical steaming. Consumers see a garment steamer immediately but notice the fabric band — that is the brand memory anchor. Three-quarter hero shot, 45-degree angle. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_C_front",
+    "group": "concept_C",
+    "prompt": "A handheld garment steamer, minimalist design. Classic garment steamer form instantly recognizable. Matte white body with one signature element: a warm gray woven fabric band wrapped around the middle body section serving as both grip texture and brand identity. Brushed stainless steel steam plate. Rounded rectangle body cross-section, simple geometry. No complex curves or unusual shapes. Ergonomic handle for comfortable vertical steaming. Straight-on front view, eye level. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "design_C_in_use",
+    "group": "concept_C",
+    "prompt": "A woman using a white handheld garment steamer with a distinctive gray fabric band grip to steam a blazer on a standing garment rack. Her grip on the fabric band section looks comfortable and natural, wrist in neutral position. The steamer has the classic garment steamer shape. Modern minimalist apartment, natural daylight. The gray fabric band is the recognizable detail. Lifestyle photography, warm lighting, editorial quality, 8K, photorealistic.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  },
+  {
+    "label": "three_concepts_lineup",
+    "group": "comparison",
+    "prompt": "Three handheld garment steamers side by side on white background for design comparison. All three have the classic recognizable garment steamer form — upright body, angled steam head, side handle. LEFT: matte white with thin champagne gold ring at the steam head junction. CENTER: matte mint green with a vertical glowing LED water window strip. RIGHT: matte white with a warm gray woven fabric band around the middle. All three are simple, geometric, minimal, but each has one distinct memorable signature detail. Equal spacing, same scale. Studio lighting, commercial catalog photography, photorealistic, 8K.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  },
+  {
+    "label": "ergonomic_wrist_demo",
+    "group": "ergonomics",
+    "prompt": "Split-screen ergonomic comparison photo. LEFT side labeled 'WRONG': a hand holding a generic garment steamer at an awkward angle, wrist bent backward unnaturally while trying to steam a hanging shirt, showing discomfort and strain. RIGHT side labeled 'RIGHT': a hand holding our ergonomically designed garment steamer with the angled handle, wrist in a comfortable neutral position while steaming the same hanging shirt, looking effortless and natural. Clean white background, informational product photography style, clear demonstration of ergonomic benefit, photorealistic, 8K.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "label": "organic_45deg",
+    "group": "style_organic",
+    "prompt": "A handheld garment steamer with organic flowing curves. Smooth pebble-like body, soft coral pink and cream white, matte finish. Nature-inspired flowing forms, no sharp edges. Three-quarter hero shot, 45-degree angle. White studio background. Product photography, photorealistic, 8K.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "scene_travel",
+    "group": "lifestyle",
+    "prompt": "A compact handheld garment steamer next to an open suitcase on a hotel bed. White and mint green, travel-friendly size. A steamed shirt hangs nearby. Bright hotel room. Travel lifestyle photography, editorial quality, 8K, photorealistic.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  }
+]

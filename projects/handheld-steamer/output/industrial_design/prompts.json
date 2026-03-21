@@ -1,0 +1,91 @@
+{
+  "product_name": "Handheld Steam Cleaner",
+  "mvp_version": "v3",
+  "design_brief": "A mint green handheld pressurized steam cleaner with LED ready indicator, transparent water tank window, snap-lock orange release button for attachments, steam lock slider, and matte textured surface.",
+  "prompts": [
+    {
+      "label": "hero_45deg_white_bg",
+      "group": "product_shots",
+      "prompt": "Professional product photography, white background, a sleek handheld pressurized steam cleaner in mint green (Pantone 337C) color with white accents. Pistol-grip ergonomic design. Features: a glowing green LED indicator light on the front body, a translucent water level window on the side showing water inside, an orange snap-lock release button near the nozzle attachment point, matte textured surface finish. The nozzle extends forward with a brush attachment connected. Power cord visible. 45-degree angle view. Studio lighting, high-end product photo, 8K quality, photorealistic rendering",
+      "aspect_ratio": "4:3",
+      "resolution": "2K"
+    },
+    {
+      "label": "hero_front_white_bg",
+      "group": "product_shots",
+      "prompt": "Professional product photography, white background, front view of a handheld pressurized steam cleaner in mint green color with white silicone grip handle. The body is egg-shaped with matte texture finish. A bright green LED dot glows on the front indicating ready status. A clear transparent window strip on the side shows water level with measurement markings. The top has a white twist-lock safety cap with knurled texture. Orange accent button visible on the nozzle connector. Clean minimal studio shot, photorealistic, 8K",
+      "aspect_ratio": "4:3",
+      "resolution": "2K"
+    },
+    {
+      "label": "hero_side_white_bg",
+      "group": "product_shots",
+      "prompt": "Professional product photography, white background, side profile view of a mint green handheld steam cleaner. Shows the full silhouette: egg-shaped body on top transitioning to an angled pistol grip handle in white silicone with diamond anti-slip texture. A nozzle extends from the right side. Key visible details: transparent water tank window with level markings, LED indicator light, orange snap-lock button, matte surface. Power cord coming from the bottom. Studio lighting, product catalog quality, photorealistic, 8K",
+      "aspect_ratio": "4:3",
+      "resolution": "2K"
+    },
+    {
+      "label": "detail_led_indicator",
+      "group": "detail_shots",
+      "prompt": "Close-up detail shot, macro photography style, of a mint green handheld steam cleaner's LED indicator light. The LED is embedded in the front body, currently glowing bright green (indicating 'ready'). Around it you can see the matte textured mint green surface. The light casts a subtle green glow on the surrounding area. Dark moody background to emphasize the LED glow. Product detail photography, photorealistic, 8K",
+      "aspect_ratio": "1:1",
+      "resolution": "2K"
+    },
+    {
+      "label": "detail_snaplock_orange",
+      "group": "detail_shots",
+      "prompt": "Close-up detail shot of a steam cleaner nozzle attachment connector featuring an orange snap-lock release button mechanism. The orange button is clearly visible against the mint green body. A brush nozzle attachment is clicked into place, with the locking mechanism engaged. You can see the precision-fit connection point. The design communicates safety and security. Dark background, product detail macro photography, photorealistic, 8K",
+      "aspect_ratio": "1:1",
+      "resolution": "2K"
+    },
+    {
+      "label": "detail_water_window",
+      "group": "detail_shots",
+      "prompt": "Close-up detail shot of a handheld steam cleaner's transparent water tank window. The clear PC window strip on the side of the mint green body shows water inside with visible measurement markings (100ml, 200ml, 300ml MAX etched on the interior). Light refracts through the water creating a subtle blue shimmer. Matte mint green surface surrounding the window. Product detail photography, photorealistic, 8K",
+      "aspect_ratio": "1:1",
+      "resolution": "2K"
+    },
+    {
+      "label": "accessories_flatlay",
+      "group": "product_shots",
+      "prompt": "Top-down flat lay product photography on white background. A mint green handheld steam cleaner in the center, surrounded by 12 accessories neatly arranged in a circle: 5 different nozzles (straight, angled, extended, wide-mouth, squeegee), 4 round brushes, 1 brass brush, 1 towel sleeve, 1 funnel, 2 mint green spare sealing rings, and a white canvas storage bag. Each accessory is cleanly spaced. The composition conveys completeness and value. Studio lighting, catalog quality, photorealistic, 8K",
+      "aspect_ratio": "1:1",
+      "resolution": "2K"
+    },
+    {
+      "label": "scene_kitchen",
+      "group": "lifestyle",
+      "prompt": "Lifestyle product photography in a bright modern kitchen. A woman's hand holds a mint green handheld steam cleaner, directing steam at kitchen tile grout near the countertop. Visible steam coming from the nozzle. The LED on the steamer glows green. The kitchen is clean and modern with white subway tiles, marble countertop, and warm natural lighting from a window. The mint green color of the steamer complements the kitchen aesthetic. Photorealistic, editorial quality, 8K",
+      "aspect_ratio": "16:9",
+      "resolution": "2K"
+    },
+    {
+      "label": "scene_bathroom",
+      "group": "lifestyle",
+      "prompt": "Lifestyle product photography in a modern bathroom. A mint green handheld steam cleaner is being used to clean bathroom tile grout between white floor tiles. Steam visibly rising from the nozzle tip. The bathroom has a clean modern design with a glass shower door visible in the background. Natural overhead lighting. The mint green steamer stands out beautifully against the white bathroom. Photorealistic, editorial quality, 8K",
+      "aspect_ratio": "16:9",
+      "resolution": "2K"
+    },
+    {
+      "label": "scene_car",
+      "group": "lifestyle",
+      "prompt": "Lifestyle product photography showing a mint green handheld steam cleaner being used to clean a car interior dashboard and air vents. The person holds the steamer with one hand, directing a brush nozzle attachment into the car's air conditioning vent. Steam rising softly. The car interior is a dark gray/black leather. The mint green color of the steamer creates a beautiful contrast with the dark car interior. Natural daylight coming through the car window. Photorealistic, editorial quality, 8K",
+      "aspect_ratio": "16:9",
+      "resolution": "2K"
+    },
+    {
+      "label": "comparison_vs_competitor",
+      "group": "marketing",
+      "prompt": "Split-screen product comparison image. LEFT SIDE: a generic dark gray steam cleaner with water leaking from the cap, water spraying from the nozzle, and a loose attachment falling off — labeled problems. The image has a slight red tint. RIGHT SIDE: a mint green steam cleaner with a green LED glowing, clean dry steam coming out, orange snap-lock attachment firmly in place, transparent water window visible — looking pristine and premium. The image has a slight green tint. Clean white background, product marketing infographic style, photorealistic, 8K",
+      "aspect_ratio": "16:9",
+      "resolution": "2K"
+    },
+    {
+      "label": "packaging_unboxing",
+      "group": "marketing",
+      "prompt": "Product unboxing flat lay photography. A premium mint green and white product box is open, revealing a mint green handheld steam cleaner nestled in custom white EVA foam insert. Accessories are arranged in dedicated compartments. A mint green canvas storage bag is folded next to the box. A QR code card and colorful instruction booklet are visible. The overall impression is premium, organized, and delightful. Overhead shot, white marble surface, natural lighting, editorial product photography, photorealistic, 8K",
+      "aspect_ratio": "4:3",
+      "resolution": "2K"
+    }
+  ]
+}

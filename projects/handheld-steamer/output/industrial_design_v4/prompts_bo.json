@@ -1,0 +1,44 @@
+[
+  {
+    "label": "bo_45deg",
+    "group": "style_bang_olufsen",
+    "prompt": "A handheld garment steamer inspired by Bang & Olufsen design aesthetic. Sculptural audio-visual elegance applied to a garment steamer. Brushed aluminum body with seamless unibody construction, floating form factor. The steam head has a circular disc shape reminiscent of B&O speaker grilles with precision-drilled micro-perforation pattern. Anodized champagne gold aluminum finish with warm gray fabric-wrapped grip section. Minimal controls — single touch-sensitive power circle on the body. The water tank is hidden within the seamless aluminum shell. Danish luxury meets garment care technology. Architectural presence, museum-worthy product design. Three-quarter hero shot, 45-degree angle, dynamic and engaging perspective. Pure white studio background, infinite curve backdrop. Professional product photography, studio lighting setup with soft diffusion, photorealistic rendering, highly detailed surface textures, 8K quality, clean sharp focus, subtle shadows and reflections.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "bo_front",
+    "group": "style_bang_olufsen",
+    "prompt": "A handheld garment steamer inspired by Bang & Olufsen design philosophy. Front view showing the sculptural silhouette. Brushed aluminum unibody with champagne gold anodized finish. The steam head is a flat circular disc with precision micro-perforations arranged in concentric circles, like a B&O speaker grille. Warm gray premium knit fabric wrapped around the handle section. One seamless touch button. Ultra-premium minimalist Danish design. Straight-on front view, eye level, centered composition. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "bo_side_profile",
+    "group": "style_bang_olufsen",
+    "prompt": "A handheld garment steamer with Bang & Olufsen inspired design. Side profile view showing the elegant sculptural silhouette. Brushed champagne gold aluminum body flowing from steam head to base in one continuous curve. The handle area is wrapped in warm gray premium woven textile. The steam disc head extends at a graceful angle. Thin LED light strip glows amber along the body seam. Floating, architectural, gallery-worthy. Side profile view, 90-degree angle, clean silhouette. Pure white studio background. Professional product photography, studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "bo_detail_steamhead",
+    "group": "style_bang_olufsen",
+    "prompt": "Extreme close-up detail shot of the steam head of a Bang & Olufsen inspired handheld garment steamer. The steam head is a flat circular disc made of brushed stainless steel with hundreds of precision-drilled micro-perforations arranged in elegant concentric circle patterns, reminiscent of a B&O Beoplay speaker grille. Wisps of steam rising through the perforations. A thin champagne gold aluminum ring frames the disc. Macro photography, shallow depth of field, dramatic studio lighting highlighting the metal texture. Photorealistic, 8K detail.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "bo_detail_fabric_grip",
+    "group": "style_bang_olufsen",
+    "prompt": "Close-up detail shot of the handle section of a Bang & Olufsen inspired handheld garment steamer. The grip is wrapped in premium warm gray Kvadrat-style woven textile fabric, contrasting beautifully with the brushed champagne gold aluminum body above and below. A subtle amber LED line runs along the seam where metal meets fabric. A woman's hand elegantly holds the grip. The material quality and craftsmanship is exquisite. Macro photography, warm studio lighting, photorealistic, 8K quality.",
+    "aspect_ratio": "4:3",
+    "resolution": "2K"
+  },
+  {
+    "label": "bo_lifestyle_wardrobe",
+    "group": "style_bang_olufsen",
+    "prompt": "A Bang & Olufsen inspired champagne gold brushed aluminum handheld garment steamer being used by an elegantly dressed woman in a luxurious walk-in wardrobe. She is steaming a silk blouse on a wooden hanger. The wardrobe has warm wood shelving, soft ambient lighting, and curated clothing. The steamer looks like a premium design object that belongs alongside designer clothing. Editorial fashion photography, warm ambient lighting, aspirational luxury lifestyle, 8K, photorealistic.",
+    "aspect_ratio": "16:9",
+    "resolution": "2K"
+  }
+]

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vacuum Steamer 美国站选品分析 - 精简报告</title>
+<style>
+  :root {
+    --primary: #2563eb;
+    --success: #16a34a;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    color: white;
+    padding: 40px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 50%;
+  }
+  .header h1 { font-size: 28px; margin-bottom: 8px; }
+  .header .subtitle { opacity: 0.85; font-size: 14px; }
+
+  /* Decision Badge */
+  .decision-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.2);
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 16px;
+    backdrop-filter: blur(4px);
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .card h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h3 {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin: 16px 0 8px;
+  }
+
+  /* KPI Grid */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .kpi-card .label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+  .kpi-card .value { font-size: 28px; font-weight: 700; color: var(--primary); margin: 4px 0; }
+  .kpi-card .note { font-size: 12px; color: var(--text-secondary); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: #f8fafc; }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .tag-green { background: #dcfce7; color: #166534; }
+  .tag-yellow { background: #fef3c7; color: #92400e; }
+  .tag-red { background: #fee2e2; color: #991b1b; }
+  .tag-blue { background: #dbeafe; color: #1e40af; }
+
+  /* Score Bar */
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+  }
+  .score-bar .bar-bg {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .score-bar .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--primary);
+  }
+  .score-bar .score-label { font-size: 13px; min-width: 140px; }
+  .score-bar .score-value { font-size: 13px; font-weight: 700; min-width: 40px; text-align: right; }
+
+  /* Highlight */
+  .highlight-box {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border-left: 4px solid var(--primary);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+  }
+  .warning-box {
+    background: #fffbeb;
+    border-left: 4px solid var(--warning);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 16px 0;
+    font-size: 13px;
+  }
+
+  /* Two Column Layout */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Pain Point List */
+  .pain-list { list-style: none; }
+  .pain-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+  .pain-list li:last-child { border-bottom: none; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 20px;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+
+  .trend-up { color: var(--success); }
+  .trend-down { color: var(--danger); }
+
+  /* Print styles */
+  @media print {
+    body { background: white; }
+    .container { max-width: 100%; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <h1>Vacuum Steamer 美国站选品分析</h1>
+  <div class="subtitle">报告日期：2026-03-20 | 数据来源：Sorftime MCP | 目标价位：$20-50</div>
+  <div class="decision-badge">✅ 有条件 Go — 综合评分 7.3/10</div>
+</div>
+
+<!-- KPI Overview -->
+<div class="kpi-grid">
+  <div class="kpi-card">
+    <div class="label">核心词月搜索量</div>
+    <div class="value">9,469</div>
+    <div class="note">vacuum steamer · 增长40x</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">类目月销额</div>
+    <div class="value">$11.0M</div>
+    <div class="note">Steam Mops Top100</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">新品销量占比</div>
+    <div class="value" style="color: var(--success);">26.7%</div>
+    <div class="note">较去年 +150%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="label">目标价位竞品数</div>
+    <div class="value" style="color: var(--warning);">1 款</div>
+    <div class="note">CURMEDI $43.99</div>
+  </div>
+</div>
+
+<!-- Key Findings -->
+<div class="card">
+  <h2>🔍 核心发现</h2>
+  <div class="highlight-box">
+    <strong>推荐方向：手持蒸汽清洁器（$35-50 价位）</strong><br>
+    "vacuum steamer" 搜索结果混合两类产品：衣物挂烫机 + 蒸汽清洁器。真正的吸尘蒸汽一体机均价 $80-160，超出目标价位。在 $20-50 区间，手持蒸汽清洁器竞争最小、机会最大。
+  </div>
+
+  <div class="two-col" style="margin-top: 16px;">
+    <div>
+      <h3>✅ 看好因素</h3>
+      <ul style="font-size: 13px; padding-left: 20px;">
+        <li>关键词 2025 年爆发式增长 40 倍</li>
+        <li>搜索首页 100% 低评价产品，无壁垒</li>
+        <li>新品占比 27-31%，消费者愿尝新</li>
+        <li>类目年增长 ~30%，趋势向上</li>
+        <li>竞品差评痛点明确，可差异化</li>
+      </ul>
+    </div>
+    <div>
+      <h3>⚠️ 风险因素</h3>
+      <ul style="font-size: 13px; padding-left: 20px;">
+        <li>需 UL/ETL 电器认证（⚠️推测）</li>
+        <li>漏水/功率是行业通病</li>
+        <li>HiLIFE 等大卖可能快速跟进</li>
+        <li>均价有下行趋势 $95→$83</li>
+        <li>首批投入需 $30K-40K（⚠️推测）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Market Overview -->
+<div class="card">
+  <h2>📊 市场概览</h2>
+  <table>
+    <thead>
+      <tr><th>指标</th><th>Steam Mops 类目</th><th>Stick Vacuums 类目</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Top100 月销额</td><td><strong>$10,963,659</strong></td><td>$41,528,238</td></tr>
+      <tr><td>Top100 月销量</td><td>116,727</td><td>306,137</td></tr>
+      <tr><td>均价</td><td>$83.77</td><td>$140.10</td></tr>
+      <tr><td>Top3 品牌集中度</td><td>54.49%</td><td>45.53%</td></tr>
+      <tr><td>新品销量占比</td><td>6.50%</td><td>6.59%</td></tr>
+      <tr><td>中国卖家占比</td><td>76.36%</td><td>85.71%</td></tr>
+      <tr><td>亚马逊自营占比</td><td>61.56%</td><td>50.61%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Keywords -->
+<div class="card">
+  <h2>🔤 关键词矩阵</h2>
+  <table>
+    <thead>
+      <tr><th>关键词</th><th>月搜索量</th><th>CPC</th><th>旺季</th><th>竞争</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>steam cleaner</td><td><strong>530,968</strong></td><td>$1.53</td><td>2 月</td><td><span class="tag tag-red">高</span></td></tr>
+      <tr><td>steam mop</td><td>276,501</td><td>$1.41</td><td>7 月</td><td><span class="tag tag-red">高</span></td></tr>
+      <tr><td>floor steamer</td><td>60,458</td><td>$1.51</td><td>均衡</td><td><span class="tag tag-yellow">中</span></td></tr>
+      <tr><td>steam vacuum cleaner</td><td>21,407</td><td>$1.99</td><td>均衡</td><td><span class="tag tag-green">中</span></td></tr>
+      <tr><td>steamer cleaner</td><td>18,545</td><td>$1.40</td><td>11 月</td><td><span class="tag tag-green">低</span></td></tr>
+      <tr><td><strong>vacuum steamer</strong></td><td><strong>9,469</strong></td><td>$1.84</td><td>3 月</td><td><span class="tag tag-green">低</span></td></tr>
+      <tr><td>steam vacuum</td><td>8,574</td><td>$1.23</td><td>7,11 月</td><td><span class="tag tag-green">低</span></td></tr>
+    </tbody>
+  </table>
+  <div class="warning-box" style="margin-top: 12px;">
+    💡 <strong>策略：</strong>优先埋词 vacuum steamer / steam vacuum cleaner / steamer cleaner（低竞争），通过 steam cleaner（53 万月搜索）获取长尾流量。
+  </div>
+</div>
+
+<!-- Top Competitors -->
+<div class="card">
+  <h2>🏆 $20-50 竞品分析</h2>
+  <table>
+    <thead>
+      <tr><th>品牌</th><th>价格</th><th>月销</th><th>星级</th><th>评论</th><th>类型</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>HiLIFE</td><td>$29.99</td><td>57,600</td><td>⭐4.6</td><td>130,054</td>
+        <td><span class="tag tag-blue">衣物挂烫机</span></td>
+      </tr>
+      <tr>
+        <td>HiLIFE</td><td>$42.99</td><td>57,600</td><td>⭐4.1</td><td>131,126</td>
+        <td><span class="tag tag-blue">衣物挂烫机</span></td>
+      </tr>
+      <tr>
+        <td>OGHom</td><td>$26.99</td><td>15,705</td><td>⭐4.3</td><td>74</td>
+        <td><span class="tag tag-blue">衣物挂烫机</span></td>
+      </tr>
+      <tr>
+        <td>BEAUTURAL</td><td>$21.99</td><td>14,359</td><td>⭐4.3</td><td>15,903</td>
+        <td><span class="tag tag-blue">衣物挂烫机</span></td>
+      </tr>
+      <tr style="background: #eff6ff;">
+        <td><strong>CURMEDI</strong></td><td><strong>$43.99</strong></td><td><strong>13,431</strong></td><td>⭐4.1</td><td>1,003</td>
+        <td><span class="tag tag-green">蒸汽清洁器</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="highlight-box" style="margin-top: 12px;">
+    🎯 <strong>CURMEDI 是 $20-50 价位唯一的手持蒸汽清洁器竞品</strong>，月销 $590,830，验证赛道可行性。其差评痛点（漏水、功率、配件松动）为新品差异化提供明确方向。
+  </div>
+</div>
+
+<!-- Pain Points -->
+<div class="card">
+  <h2>😤 竞品差评痛点 TOP5</h2>
+  <p style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">来源：CURMEDI B0DGQ7L856 + HiLIFE B0CSYR4HRD 差评分析</p>
+  <ul class="pain-list">
+    <li>
+      <span>🔴 <strong>漏水/吐水</strong> — 两类产品通病，蒸汽类第一痛点</span>
+      <span class="tag tag-red">必须解决</span>
+    </li>
+    <li>
+      <span>🔴 <strong>耐用性差</strong> — "5次后停止工作"、"6个月后衰减"</span>
+      <span class="tag tag-red">必须解决</span>
+    </li>
+    <li>
+      <span>🔴 <strong>电路跳闸/功率过大</strong> — "整个公寓断电"</span>
+      <span class="tag tag-red">必须解决</span>
+    </li>
+    <li>
+      <span>🟡 <strong>配件松动不牢固</strong> — "attachments don't fit"</span>
+      <span class="tag tag-yellow">重要改进</span>
+    </li>
+    <li>
+      <span>🟡 <strong>水箱太小/蒸汽控制差</strong> — 容量不足+无法调节</span>
+      <span class="tag tag-yellow">重要改进</span>
+    </li>
+  </ul>
+</div>
+
+<!-- Score -->
+<div class="card">
+  <h2>📈 五维度综合评分</h2>
+  <div class="score-bar">
+    <span class="score-label">市场规模与增长 (25%)</span>
+    <div class="bar-bg"><div class="bar-fill" style="width: 80%; background: var(--success);"></div></div>
+    <span class="score-value">8/10</span>
+  </div>
+  <div class="score-bar">
+    <span class="score-label">竞争强度 (25%)</span>
+    <div class="bar-bg"><div class="bar-fill" style="width: 70%; background: var(--primary);"></div></div>
+    <span class="score-value">7/10</span>
+  </div>
+  <div class="score-bar">
+    <span class="score-label">新品友好度 (20%)</span>
+    <div class="bar-bg"><div class="bar-fill" style="width: 80%; background: var(--success);"></div></div>
+    <span class="score-value">8/10</span>
+  </div>
+  <div class="score-bar">
+    <span class="score-label">利润空间 (15%)</span>
+    <div class="bar-bg"><div class="bar-fill" style="width: 60%; background: var(--warning);"></div></div>
+    <span class="score-value">6/10</span>
+  </div>
+  <div class="score-bar">
+    <span class="score-label">供应链可行性 (15%)</span>
+    <div class="bar-bg"><div class="bar-fill" style="width: 70%; background: var(--primary);"></div></div>
+    <span class="score-value">7/10</span>
+  </div>
+  <div style="text-align: center; margin-top: 20px; padding: 16px; background: linear-gradient(135deg, #eff6ff, #dbeafe); border-radius: 12px;">
+    <div style="font-size: 14px; color: var(--text-secondary);">加权总分</div>
+    <div style="font-size: 42px; font-weight: 800; color: var(--primary);">7.30<span style="font-size: 18px;">/10</span></div>
+    <div style="font-size: 14px; color: var(--success); font-weight: 600;">✅ 有条件 Go</div>
+  </div>
+</div>
+
+<!-- Cost Estimate -->
+<div class="card">
+  <h2>💰 投入产出概览 <span class="tag tag-yellow" style="font-size: 10px; vertical-align: middle;">⚠️ 推测</span></h2>
+  <div class="two-col">
+    <div>
+      <h3>成本结构（售价 $42.99）</h3>
+      <table>
+        <tr><td>1688采购</td><td style="text-align:right;">$9.00</td></tr>
+        <tr><td>运费+头程</td><td style="text-align:right;">$5.50</td></tr>
+        <tr><td>FBA配送</td><td style="text-align:right;">$6.50</td></tr>
+        <tr><td>亚马逊佣金15%</td><td style="text-align:right;">$6.45</td></tr>
+        <tr><td>包装/标签</td><td style="text-align:right;">$1.50</td></tr>
+        <tr style="font-weight: 700; border-top: 2px solid var(--border);">
+          <td>毛利</td><td style="text-align:right; color: var(--success);">$14.04 (32.7%)</td>
+        </tr>
+      </table>
+    </div>
+    <div>
+      <h3>首批总投入</h3>
+      <table>
+        <tr><td>首批备货 1000件</td><td style="text-align:right;">$12,000</td></tr>
+        <tr><td>运费+头程</td><td style="text-align:right;">$5,500</td></tr>
+        <tr><td>认证(UL/ETL)</td><td style="text-align:right;">$3,000-8,000</td></tr>
+        <tr><td>品牌+Listing</td><td style="text-align:right;">$1,000</td></tr>
+        <tr><td>广告启动3个月</td><td style="text-align:right;">$9,000-15,000</td></tr>
+        <tr style="font-weight: 700; border-top: 2px solid var(--border);">
+          <td>总计</td><td style="text-align:right; color: var(--primary);">$30.5K-41.5K</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Action Plan -->
+<div class="card">
+  <h2>🚀 行动建议</h2>
+  <table>
+    <thead>
+      <tr><th>优先级</th><th>行动项</th><th>说明</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-red">P0</span></td>
+        <td>确认 UL/ETL 认证要求</td>
+        <td>电器类合规是前置条件（⚠️推测）</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-red">P0</span></td>
+        <td>1688 选供应商，样品测试</td>
+        <td>重点测试防漏水和耐用性</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-yellow">P1</span></td>
+        <td>产品差异化设计</td>
+        <td>针对漏水/功率/配件3大痛点优化</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-yellow">P1</span></td>
+        <td>品牌注册 + Listing 准备</td>
+        <td>埋词：vacuum steamer / steam vacuum cleaner</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-green">P2</span></td>
+        <td>争取1月前上架</td>
+        <td>赶3月旺季（vacuum steamer旺季月）</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <p>数据来源：Sorftime MCP | 报告日期：2026-03-20 | 版本：v1</p>
+  <p style="margin-top: 4px;">标注 ⚠️推测 的内容为基于行业经验估算，非 Sorftime 直接输出</p>
+</div>
+
+</div>
+</body>
+</html>
