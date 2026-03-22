@@ -1,9 +1,0 @@
-{
-  "api_mode": "gemini",
-  "model": "nanobanana-2",
-  "resolution": "2K",
-  "total": 8,
-  "success": 7,
-  "failed": 1,
-  "output_dir": "C:\\Users\\Administrator\\vacuum_steamer_research\\output\\industrial_design_v4\\images"
-}
