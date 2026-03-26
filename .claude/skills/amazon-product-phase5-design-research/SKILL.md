@@ -1,11 +1,11 @@
 ---
-name: amazon-product-phase4-design-research
-description: "亚马逊精益开发 Phase 4：工业设计调研。下载竞品图片→Agent形态分类→用户选目标形态→蒸馏baseline线稿→场景人因约束→风格规划→输出design_research_pack.json供Phase 5使用。"
+name: amazon-product-phase5-design-research
+description: "亚马逊精益开发 Phase 5：工业设计调研。下载竞品图片→Agent形态分类→用户选目标形态→蒸馏baseline线稿→场景人因约束→风格规划→输出design_research_pack.json供Phase 6使用。"
 argument-hint: "[产品名称] [站点]"
 user-invocable: true
 ---
 
-# Phase 4：工业设计调研
+# Phase 5：工业设计调研
 
 竞品图片下载 → 形态分类 → 基准线稿蒸馏 → 风格规划 → 输出交接包。全流程在一个会话完成。
 
@@ -20,12 +20,12 @@ user-invocable: true
 
 ## 输出目录结构
 ```
-[工作目录]/phase4_design_research/output/
+[工作目录]/phase5_design_research/output/
   ├── competitor_images/        # 竞品产品图
   ├── baselines/                # 蒸馏线稿
   ├── archetype_classification.json
   ├── scene_observations.json
-  ├── design_research_pack.json # ⭐ Phase 5 主输入
+  ├── design_research_pack.json # ⭐ Phase 6 主输入
   └── YYYYMMDD_*_设计调研报告.md
 ```
 
@@ -99,7 +99,7 @@ user-invocable: true
 
 ## Step 5：输出交接包 + 报告
 
-### design_research_pack.json（Phase 5 主输入）
+### design_research_pack.json（Phase 6 主输入）
 ```
 {
   "meta": {phase/product/site/date/baseline_source},
@@ -117,7 +117,7 @@ user-invocable: true
     "priority_order", "phase3_color_mapping"
   },
   "competitive_landscape": {竞品数据摘要},
-  "internal_stacking": {Phase 1-4 数据链路摘要}
+  "internal_stacking": {Phase 1-5 数据链路摘要}
 }
 ```
 
@@ -128,7 +128,7 @@ user-invocable: true
 3. 基准草图（线稿 + 结构区域说明 + 验证表）
 4. 使用场景约束（人因约束表 + 关键发现）
 5. 风格规划（4 种风格详情表）
-6. Phase 5 交接清单
+6. Phase 6 交接清单
 
 ## Agent 注意事项
 
@@ -144,9 +144,9 @@ user-invocable: true
 - [ ] `archetype_classification.json` — 形态分类
 - [ ] `baselines/*_baseline.jpg` — 每张竞品图对应的1:1线稿
 - [ ] `scene_observations.json` — 场景人因观察
-- [ ] `design_research_pack.json` — ⭐ Phase 5 主输入
+- [ ] `design_research_pack.json` — ⭐ Phase 6 主输入
 - [ ] `YYYYMMDD_*_设计调研报告.md` — 完整报告
-- 告诉用户：**Phase 4 完成，可运行 Phase 5 生成概念图**
+- 告诉用户：**Phase 5 完成，可运行 Phase 6 生成概念图**
 
 
 ---

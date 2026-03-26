@@ -33,15 +33,49 @@ allowed-tools: Read, Glob, Bash, Write, WebSearch
 
 1. 读取 `skills/amazon-product-phase2-demand-validator/SKILL.md`
 2. 解析输入并构造 3-5 个关键词变体
-3. 优先检测是否可用 Sorftime MCP
-4. Review 维度：
-   - 有 Sorftime：走 `product_reviews` + `scripts/parse_reviews.py`
-   - 无 Sorftime：走 `review_source_pack` + `scripts/parse_review_source_pack.py`
-5. 关键词维度：
-   - 有 Sorftime：走 `keyword_detail / keyword_trend / keyword_extends`
-   - 无 Sorftime：明确写"未验证 / 待补充"，不伪造
+3. **数据源可用性预检** — 轻量调用 `category_name_search("test")` 测试 MCP 连通性
+4. Review 维度：按下方三级降级路径执行
+5. 关键词维度：按下方三级降级路径执行
 6. 社区维度：WebSearch 搜 Reddit / Quora，并用脚本导出 CSV
-7. 生成报告并运行 `scripts/validate_deliverables.py`
+7. **分析深度自适应** — 根据信号强度调整验证深度（见下方阈值表）
+8. 生成报告并运行 `scripts/validate_deliverables.py`
+
+## 三级降级路径
+
+### Level 1: 全功能模式（MCP 可用）
+| 维度 | 数据来源 | 标注 |
+|------|---------|------|
+| Review | `product_reviews(asin)` + `scripts/parse_reviews.py` | ✅ 完整数据 |
+| 关键词 | `keyword_detail` + `keyword_trend` + `keyword_extends` | ✅ 完整数据 |
+| 社区 | WebSearch | ✅ 完整数据 |
+
+### Level 2: 部分降级（MCP 部分不可用）
+| 维度 | 数据来源 | 标注 |
+|------|---------|------|
+| Review | `review_source_pack/` + `scripts/parse_review_source_pack.py` | ⚠️ 本地数据 |
+| 关键词 | 标注「⚠️ 待补充」 | ⚠️ 缺失 |
+| 社区 | WebSearch | ✅ 完整数据 |
+
+→ 结论可信度标注为「参考级」，建议 MCP 恢复后补验
+
+### Level 3: 手动输入模式（MCP 完全不可用 + 无本地数据）
+| 维度 | 数据来源 | 标注 |
+|------|---------|------|
+| Review | 用户手动提供评论截图/文本 | ⚠️ 用户提供 |
+| 关键词 | WebSearch 搜 "产品名 amazon search volume" | ⚠️ 估算 |
+| 社区 | WebSearch | ✅ 完整数据 |
+
+→ 报告标题加「⚠️ 降级模式」，不做决定性结论
+
+## 分析深度自适应（阈值驱动）
+
+根据 Review 维度获取的信号强度，动态调整后续验证深度：
+
+| 信号强度 | 判断标准 | 执行路径 |
+|---------|---------|---------|
+| **强信号** | 相关 Review 提及率 >15% 或差评中 ≥3 条明确描述该痛点 | → 深度验证：关键词查 10+ 个变体 + 社区搜 3 个平台 + 竞品对比 5 个 |
+| **中等信号** | 提及率 5-15% 或差评中 1-2 条相关 | → 标准验证：关键词查 5 个核心词 + 社区搜 Reddit + 竞品对比 3 个 |
+| **弱信号** | 提及率 <5% 且无明确差评 | → 快速筛选：关键词查 3 个 + 社区快扫 + 直接给出「信号不足，不建议投入」 |
 
 ## 输出
 
@@ -57,6 +91,51 @@ allowed-tools: Read, Glob, Bash, Write, WebSearch
 
 - 上游：`amazon-product-phase1-research`（Phase 1：选品分析）
 - 下游：`amazon-product-phase3-mvp-blueprint`（Phase 3：MVP 蓝图）
+
+### 输入协议（读取上游数据）
+
+IF Phase 1 的 `unified_payload.json` 存在:
+  → 自动读取 `market.nodeId`, `keywords[]`, `competitors[]`, `painPoints[]`
+  → 跳过重复的品类搜索步骤
+  → 在报告中标注「上游数据来源: Phase 1」
+ELSE:
+  → 要求用户提供品类/ASIN + 功能描述
+  → 自行调用 Sorftime 获取数据
+
+### 输出协议（供下游 Phase 3 读取）
+
+验证完成后必须产出 `phase2_validation.json`：
+
+```json
+{
+  "meta": { "phase": "phase2", "product": "...", "feature": "...", "site": "US", "date": "..." },
+  "validation_result": "TRUE_DEMAND | WEAK_SIGNAL | FALSE_DEMAND",
+  "confidence": 0.0-1.0,
+  "signals": {
+    "review": {
+      "complaint_rate": 0.0,
+      "positive_mention_rate": 0.0,
+      "sample_size": 0,
+      "top_complaints": ["...", "..."]
+    },
+    "keyword": {
+      "search_volume": 0,
+      "trend": "上升 | 平稳 | 下降",
+      "related_terms": ["...", "..."]
+    },
+    "community": {
+      "reddit_mentions": 0,
+      "sentiment": "正面 | 中性 | 负面"
+    }
+  },
+  "next_phase": "phase3 | stop"
+}
+```
+
+**下游触发规则:**
+- `TRUE_DEMAND` + `confidence >= 0.7` → 建议执行 Phase 3 MVP 蓝图
+- `WEAK_SIGNAL` → 列出需补充验证的维度，用户决定是否继续
+- `FALSE_DEMAND` → 终止，不进入 Phase 3
 
 ## 强制要求
 

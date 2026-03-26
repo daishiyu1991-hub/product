@@ -1,15 +1,15 @@
 ---
-name: amazon-product-phase6-launch-review
-description: "亚马逊精益开发 Phase 6：产品上架后 30/60/90 天数据复盘。采集核心指标（BSR/转化率/ACOS/Review），对照 MVP 蓝图测试标准，执行 Kill/Continue/Pivot 决策框架。优先调用 Sorftime MCP 获取产品数据；无 Sorftime 时支持用户手动输入 Seller Central 数据。"
+name: amazon-product-phase7-launch-review
+description: "亚马逊精益开发 Phase 7：产品上架后 30/60/90 天数据复盘。采集核心指标（BSR/转化率/ACOS/Review），对照 MVP 蓝图测试标准，执行 Kill/Continue/Pivot 决策框架。优先调用 Sorftime MCP 获取产品数据；无 Sorftime 时支持用户手动输入 Seller Central 数据。"
 argument-hint: "[ASIN] [站点] [--days 复盘天数] [--mvp-blueprint 蓝图路径]"
 user-invocable: true
 ---
 
-# 上架数据复盘（精益开发 Phase 6）
+# 上架数据复盘（精益开发 Phase 7）
 
 ## 定位
 
-`amazon-product-phase6-launch-review` 是精益产品开发闭环的第六阶段。产品上架后，用数据回答一个关键问题：**这个产品该继续还是该杀掉？**
+`amazon-product-phase7-launch-review` 是精益产品开发闭环的第七阶段。产品上架后，用数据回答一个关键问题：**这个产品该继续还是该杀掉？**
 
 通过对照 MVP 蓝图（Phase 3：`amazon-product-phase3-mvp-blueprint`）中设定的测试标准，客观评估产品表现，做出 Kill / Continue / Pivot 决策。
 
@@ -30,12 +30,12 @@ user-invocable: true
 
 ### 方式1：指定 ASIN
 ```
-/amazon-product-phase6-launch-review B0XXXXXXXX US --days 30
+/amazon-product-phase7-launch-review B0XXXXXXXX US --days 30
 ```
 
 ### 方式2：关联 MVP 蓝图
 ```
-/amazon-product-phase6-launch-review B0XXXXXXXX US --days 60 --mvp-blueprint ./工作成果/brands/AORYVIC/精益开发/bluetooth-speaker/mvp-blueprint/
+/amazon-product-phase7-launch-review B0XXXXXXXX US --days 60 --mvp-blueprint ./工作成果/brands/AORYVIC/精益开发/bluetooth-speaker/mvp-blueprint/
 ```
 
 ### 方式3：自然语言
@@ -47,7 +47,7 @@ user-invocable: true
 
 当调用此 Skill 时，执行以下流程：
 
-1. **读取完整方法论** — 加载 `skills/amazon-product-phase6-launch-review/SKILL.md`
+1. **读取完整方法论** — 加载 `skills/amazon-product-phase7-launch-review/SKILL.md`
 2. **读取基线** — 加载 MVP 蓝图（Phase 3）中的测试标准作为对照基线
 3. **核心指标采集** — Sorftime（product_detail/product_trend/product_reviews）或用户手动输入
 4. **流量分析** — 自然流量关键词排名 + 广告数据（ACOS/TACoS/CPC/CTR）
@@ -66,9 +66,9 @@ user-invocable: true
 
 ## 上下游对接
 
-- 上游：`amazon-product-phase3-mvp-blueprint`（Phase 3：MVP 蓝图 → 测试标准基线）+ `amazon-product-phase5-design-generation`（Phase 5：工业设计概念图）
+- 上游：`amazon-product-phase3-mvp-blueprint`（Phase 3：MVP 蓝图 → 测试标准基线）+ `amazon-product-phase6-design-generation`（Phase 6：工业设计概念图）
 - 下游：
-  - Continue 决策 → `amazon-product-phase7-iteration-playbook`（Phase 7：迭代优化）
+  - Continue 决策 → `amazon-product-phase8-iteration-playbook`（Phase 8：迭代优化）
   - Pivot 决策 → 修改产品后重新进入 launch-review
   - Kill 决策 → 清库存退出，资源释放给新品
 
@@ -80,7 +80,7 @@ user-invocable: true
 
 ## 完整方法论
 
-详见 `skills/amazon-product-phase6-launch-review/SKILL.md`
+详见 `skills/amazon-product-phase7-launch-review/SKILL.md`
 
 
 ---
